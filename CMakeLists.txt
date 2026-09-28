@@ -31,8 +31,8 @@ if (WIN32)
     ) 
     # Copie l'icône dans le build dir pour que le .rc la trouve
     configure_file(
-        ${CMAKE_SOURCE_DIR}/Asset/Icone.ico
-        ${CMAKE_BINARY_DIR}/Asset/Icone.ico
+        ${CMAKE_SOURCE_DIR}/resources/Icone.ico
+        ${CMAKE_BINARY_DIR}/resources/Icone.ico
         COPYONLY
     )
 endif()
@@ -75,25 +75,27 @@ qt_add_executable(${PROJECT_NAME}
 # -------------------------
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/Asset
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>/Asset
+        ${CMAKE_SOURCE_DIR}/resources
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
 )
 
 # -------------------------
 # Ressources Qt (Windows + Linux)
 # -------------------------
-qt_add_resources(${PROJECT_NAME} "resources"
-    PREFIX "/icons"
+qt_add_resources(${PROJECT_NAME} "app_resources"
+    PREFIX "/"
     FILES
-        Asset/Icone.png
-)
-
-qt_add_resources(${PROJECT_NAME} "translations"
-    PREFIX "/translations"
-    FILES
-        Asset/translations/echo_fr.qm
-        Asset/translations/echo_en.qm
-        Asset/translations/echo_ja.qm
+        resources/Icone.png
+        resources/style/menu.qss
+        resources/translations/echo_fr.qm
+        resources/translations/echo_en.qm
+        resources/translations/echo_ja.qm
+        resources/Renard/renards_Idle0.png
+        resources/Renard/renards_Idle1.png
+        resources/Renard/renards_Sleep0.png
+        resources/Renard/renards_Sleep1.png
+        resources/Renard/renards_Walk0.png
+        resources/Renard/renards_Walk1.png
 )
 
 # -------------------------

@@ -19,7 +19,7 @@ SolidCompression=yes
 PrivilegesRequired=admin
 
 ; Icône de l’installeur
-SetupIconFile=..\Asset\Icone.ico
+SetupIconFile=..\resources\Icone.ico
 
 ; Icône affichée dans Ajout/Suppression de programmes
 UninstallDisplayIcon={app}\{#ExeName}

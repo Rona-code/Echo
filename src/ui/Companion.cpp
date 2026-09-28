@@ -1,4 +1,6 @@
 #include "Companion.h"
+#include "ActionMenu.h"
+#include "../commun/TranslationManager.h"
 #include <QPainter>
 
 Companion::Companion(QWidget* parent)
@@ -9,7 +11,7 @@ Companion::Companion(QWidget* parent)
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_DeleteOnClose, false);
 
-    setSprite("Asset/Renard/renards_Idle0.png");
+    setSprite("resources/Renard/renards_Idle0.png");
 }
 
 void Companion::setScale(float newScale)
@@ -54,6 +56,39 @@ void Companion::mousePressEvent(QMouseEvent* event)
     {
         m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
         event->accept();
+    }
+    else if (event->button() == Qt::RightButton) 
+    {
+		auto* menu = new ActionMenu(this);
+
+        // Connexion directe au TranslationManager
+        connect(menu, &ActionMenu::languageChangedRequested, this, [](const QString& langCode) {
+            TranslationManager::instance().setLanguage(langCode);
+        });
+
+        // Connexion aux autres actions
+        connect(menu, &ActionMenu::launchAppsRequested, this, [this]() {
+            // Logic pour lancer la liste des apps
+        });
+
+        connect(menu, &ActionMenu::closeAppsRequested, this, [this]() {
+            // gic pour fermer les appsLo
+        });
+
+		connect(menu, &ActionMenu::openExplorerRequested, this, [this]() {
+			// Logic pour ouvrir l'explorateur de fichiers
+	    });
+
+		connect(menu, &ActionMenu::settingsRequested, this, [this]() {
+			// Logic pour ouvrir les paramètres
+		});
+
+		connect(menu, &ActionMenu::quitRequested, this, [this]() {
+			qApp->quit();
+		});
+		
+        menu->move(event->globalPosition().toPoint());
+        menu->show();
     }
 }
 

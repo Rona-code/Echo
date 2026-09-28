@@ -23,9 +23,12 @@ int main(int argc, char* argv[])
     if (!AppInitializer::init())
         return 0;
 
-    Companion w;
+	auto* w = new Companion();
+    w->show();
 
-    w.show();
+	int result = a.exec();
 
-    return a.exec();
+	delete w;
+
+    return result;
 }

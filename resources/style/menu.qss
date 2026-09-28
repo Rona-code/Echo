@@ -1,0 +1,88 @@
+/* --- Titre & Badges --- */
+QLabel#menuTitle {
+    color: #F5A97F;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* --- Boutons d'icônes d'en-tête (⚙️ / ❓) --- */
+QPushButton#iconBtn {
+    background-color: #363A4F;
+    border: 1px solid #494D64;
+    border-radius: 13px;
+    min-width: 26px;
+    min-height: 26px;
+    max-width: 26px;
+    max-height: 26px;
+}
+
+QPushButton#iconBtn:hover {
+    background-color: #F5A97F;
+    border-color: #F5A97F;
+}
+
+/* --- Boutons d'action principaux --- */
+QPushButton {
+    background-color: #363A4F;
+    color: #CAD3F5;
+    border: 1px solid #494D64;
+    border-radius: 14px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QPushButton:hover {
+    background-color: #F5A97F;
+    color: #1E2030;
+    border: 1px solid #F5A97F;
+}
+
+QPushButton:pressed {
+    background-color: #EE996F;
+}
+
+/* --- Bouton Quitter (Alerte pastel) --- */
+QPushButton#quitBtn {
+    background-color: #492635;
+    color: #ED8796;
+    border: 1px solid #6B3247;
+}
+
+QPushButton#quitBtn:hover {
+    background-color: #ED8796;
+    color: #1E2030;
+    border: 1px solid #ED8796;
+}
+
+/* --- QComboBox (Changement de langue) --- */
+QComboBox#langCombo {
+    background-color: #363A4F;
+    color: #CAD3F5;
+    border: 1px solid #494D64;
+    border-radius: 12px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+QComboBox#langCombo:hover {
+    border-color: #F5A97F;
+}
+
+QComboBox#langCombo::drop-down {
+    border: none;
+    width: 0px; /* Cache la flèche système par défaut pour garder un look épuré */
+}
+
+/* Menu déroulant de la ComboBox */
+QComboBox QAbstractItemView {
+    background-color: #24273A;
+    color: #CAD3F5;
+    border: 1px solid #F5A97F;
+    border-radius: 8px;
+    selection-background-color: #F5A97F;
+    selection-color: #1E2030;
+    padding: 4px;
+    outline: none;
+}

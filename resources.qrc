@@ -1,10 +1,21 @@
 <RCC>
 	<qresource prefix="icons">
-		<file>Asset/Icone.png</file>
+		<file>resources/Icone.png</file>
 	</qresource>
 	<qresource prefix="/translations">
-		<file>Asset/translations/echo_fr.qm</file>
-		<file>Asset/translations/echo_en.qm</file>
-		<file>Asset/translations/echo_ja.qm</file>
+		<file>resources/translations/echo_fr.qm</file>
+		<file>resources/translations/echo_en.qm</file>
+		<file>resources/translations/echo_ja.qm</file>
+	</qresource>
+	<qresource prefix="/style">
+		<file>resources/style/menu.qss</file>
+	</qresource>
+	<qresource prefix="/pet">
+		<file>resources/Renard/renards_Idle0.png</file>
+		<file>resources/Renard/renards_Idle1.png</file>
+		<file>resources/Renard/renards_Sleep0.png</file>
+		<file>resources/Renard/renards_Sleep1.png</file>
+		<file>resources/Renard/renards_Walk0.png</file>
+		<file>resources/Renard/renards_Walk1.png</file>
 	</qresource>
 </RCC>

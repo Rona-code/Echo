@@ -165,7 +165,7 @@ mkdir -p /home/echo/Projet/$ProjectName/AppDir/usr/share/applications
 mkdir -p /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps
 
 cp /home/echo/Projet/$ProjectName/build-linux/$ProjectName /home/echo/Projet/$ProjectName/AppDir/usr/bin/
-cp /home/echo/Projet/$ProjectName/build-linux/Asset/Icone.png /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps/$ProjectName.png
+cp /home/echo/Projet/$ProjectName/build-linux/resources/Icone.png /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps/$ProjectName.png
 
 cat > /home/echo/Projet/$ProjectName/AppDir/usr/share/applications/$ProjectName.desktop << EOF
 [Desktop Entry]
@@ -214,7 +214,7 @@ mkdir -p /home/echo/Projet/$ProjectName/AppDir/usr/share/applications
 mkdir -p /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps
 
 cp /home/echo/Projet/$ProjectName/build-linux/$ProjectName /home/echo/Projet/$ProjectName/AppDir/usr/bin/
-cp /home/echo/Projet/$ProjectName/build-linux/Asset/Icone.png /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps/$ProjectName.png
+cp /home/echo/Projet/$ProjectName/build-linux/resources/Icone.png /home/echo/Projet/$ProjectName/AppDir/usr/share/icons/hicolor/256x256/apps/$ProjectName.png
 
 cat > /home/echo/Projet/$ProjectName/AppDir/usr/share/applications/$ProjectName.desktop << EOF
 [Desktop Entry]

@@ -5,7 +5,7 @@ param(
 )
 
 $ProjectName = (Split-Path $PSScriptRoot -Leaf).ToLower()
-$Path = "$PSScriptRoot/Asset"
+$Path = "$PSScriptRoot/resources"
 echo $Path
 
 function Generates {
@@ -29,13 +29,13 @@ function Generates {
 
 	mkdir "$Path/translations"
 
-	$PathTranslate = "$PSScriptRoot/Asset/translations"
+	$PathTranslate = "$PSScriptRoot/resources/translations"
 
 	lupdate . -ts "$PathTranslate/${ProjectName}_fr.ts" "$PathTranslate/${ProjectName}_en.ts" "$PathTranslate/${ProjectName}_ja.ts" "$PathTranslate/${ProjectName}_bz.ts"
 }
 
 function AutoTrad {
-	$PathTranslate = "$PSScriptRoot/Asset/translations"
+	$PathTranslate = "$PSScriptRoot/resources/translations"
 
 	$languages = @{
     "fr" = "français"
@@ -56,7 +56,7 @@ function Translates {
 		return
 	}
 	
-	$PathTranslate = "$PSScriptRoot/Asset/translations"
+	$PathTranslate = "$PSScriptRoot/resources/translations"
 
 	lrelease "$PathTranslate/${ProjectName}_fr.ts" "$PathTranslate/${ProjectName}_en.ts" "$PathTranslate/${ProjectName}_ja.ts" "$PathTranslate/${ProjectName}_bz.ts"
 }
