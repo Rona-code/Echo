@@ -1,5 +1,6 @@
 #include "ActionMenu.h"
 #include "../commun/TranslationManager.h"
+#include "PetCustomizer.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QFile>
@@ -50,7 +51,7 @@ void ActionMenu::setupUI()
     }
     else
     {
-        qWarning() << "Impossible de charger l'image du pet depuis le chemin VFS !";
+        qWarning() << tr("Impossible de charger l'image du pet depuis le chemin VFS !");
     }
 
     // ComboBox de langues
@@ -99,9 +100,13 @@ void ActionMenu::setupUI()
 
     // --- CONNEXIONS DES SIGNAUX ---
     connect(m_btnPet, &QPushButton::clicked, this, [this]() {
-        emit petClicked();
-        close();
-        });
+		this->hide();
+
+        PetCustomizer dialog(nullptr);
+        dialog.exec();
+
+        this->close();
+     });
 
     connect(m_langComboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
         if (m_isInitializing) return;
