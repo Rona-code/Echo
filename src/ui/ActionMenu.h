@@ -23,6 +23,7 @@ signals:
 	void languageChangedRequested(const QString& langCode);
 	void quitRequested();
 	void petClicked();
+	void petChangedRequested(const QString& petId);
 
 protected:
 	void paintEvent(QPaintEvent* event) override;

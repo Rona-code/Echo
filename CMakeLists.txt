@@ -92,10 +92,10 @@ qt_add_resources(${PROJECT_NAME} "app_resources"
         resources/translations/echo_ja.qm
         resources/Renard/renards_Idle0.png
         resources/Renard/renards_Idle1.png
-        resources/Renard/renards_Sleep0.png
-        resources/Renard/renards_Sleep1.png
-        resources/Renard/renards_Walk0.png
-        resources/Renard/renards_Walk1.png
+        resources/Renard/renards_sleep0.png
+        resources/Renard/renards_sleep1.png
+        resources/Renard/renards_walk0.png
+        resources/Renard/renards_walk1.png
 )
 
 # -------------------------

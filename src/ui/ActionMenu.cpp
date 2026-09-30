@@ -1,6 +1,9 @@
 #include "ActionMenu.h"
 #include "../commun/TranslationManager.h"
 #include "PetCustomizer.h"
+#include "Companion.h"
+#include "../core/PetLoader.h"
+
 #include <QPainter>
 #include <QPainterPath>
 #include <QFile>
@@ -9,12 +12,16 @@
 #include <QGraphicsDropShadowEffect>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QStyle>
+#include <QPointer>
 
 ActionMenu::ActionMenu(QWidget* parent)
     : QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
+
+    setAttribute(Qt::WA_DeleteOnClose);
 
     setupUI();
     retranslateUi();
@@ -41,17 +48,17 @@ void ActionMenu::setupUI()
     m_btnPet->setFixedSize(32, 32);
     m_btnPet->setFlat(true); // Transparent de base
 
-    // Image idle par défaut (renard)
-    QPixmap petPixmap(":/resources/Renard/renards_Sleep0.png");
-    if (!petPixmap.isNull())
+    // Chargement de l'icône initiale via PetLoader (Renard par défaut)
+    PetAnimationData defaultPet = PetLoader::loadPet(PetLoader::DEFAULT_FOX_ID);
+    QString initialIcon = defaultPet.getFirstAvailableFrame();
+
+    if (!initialIcon.isEmpty())
     {
-        // Qt::FastTransformation évite le flou sur le Pixel Art
-        m_btnPet->setIcon(QIcon(petPixmap.scaled(28, 28, Qt::KeepAspectRatio, Qt::FastTransformation)));
-        m_btnPet->setIconSize(QSize(28, 28));
-    }
-    else
-    {
-        qWarning() << tr("Impossible de charger l'image du pet depuis le chemin VFS !");
+        QPixmap petPixmap(initialIcon);
+        if (!petPixmap.isNull()) {
+            m_btnPet->setIcon(QIcon(petPixmap.scaled(28, 28, Qt::KeepAspectRatio, Qt::FastTransformation)));
+            m_btnPet->setIconSize(QSize(28, 28));
+        }
     }
 
     // ComboBox de langues
@@ -100,25 +107,27 @@ void ActionMenu::setupUI()
 
     // --- CONNEXIONS DES SIGNAUX ---
     connect(m_btnPet, &QPushButton::clicked, this, [this]() {
-		this->hide();
+        this->hide();
 
-        PetCustomizer dialog(nullptr);
-        dialog.exec();
+        // Allocation dynamique sur le tas
+        auto* customizer = new PetCustomizer(nullptr);
+        customizer->setAttribute(Qt::WA_DeleteOnClose);
 
-        this->close();
-     });
+        connect(customizer, &PetCustomizer::petSelected, this, [this](const QString& petId) {
+            emit petChangedRequested(petId);
+            });
 
-    connect(m_langComboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
-        if (m_isInitializing) return;
-        QString langCode = m_langComboBox->itemData(index).toString();
-        emit languageChangedRequested(langCode);
-        });
+        customizer->exec();
+
+        // Au lieu de close() immédiat qui tue la mémoire pendant le signal, on planifie la suppression
+        this->deleteLater();
+    });
 
     connect(m_btnLaunch, &QPushButton::clicked, this, [this]() { emit launchAppsRequested(); close(); });
     connect(m_btnClose, &QPushButton::clicked, this, [this]() { emit closeAppsRequested(); close(); });
     connect(m_btnExplorer, &QPushButton::clicked, this, [this]() { emit openExplorerRequested(); close(); });
     connect(btnSettings, &QPushButton::clicked, this, [this]() { emit settingsRequested(); close(); });
-    connect(m_btnQuit, &QPushButton::clicked, this, [this]() { emit quitRequested(); close(); });
+    connect(m_btnQuit, &QPushButton::clicked, this, [this]() { hide(); emit quitRequested(); });
 
     // Ombre portée
     auto* shadow = new QGraphicsDropShadowEffect(this);

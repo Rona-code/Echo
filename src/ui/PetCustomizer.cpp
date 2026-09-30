@@ -1,5 +1,6 @@
 #include "PetCustomizer.h"
 #include "AddSprites.h"
+#include "../core/PetLoader.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -13,6 +14,7 @@
 #include <QJsonArray>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QListWidgetItem>
 
 PetCustomizer::PetCustomizer(QWidget* parent)
 	: QDialog(parent)
@@ -69,7 +71,8 @@ void PetCustomizer::setupUI()
 
     connect(m_btnSelect, &QPushButton::clicked, this, [this]() {
         if (auto* item = m_petListWidget->currentItem()) {
-            emit petSelected(item->text());
+            QString petId = item->data(Qt::UserRole).toString();
+            emit petSelected(petId);
             accept();
         }
     });
@@ -82,7 +85,8 @@ void PetCustomizer::populatePetList()
     m_petListWidget->clear();
 
 	// Ajout du compagnon par défaut
-	m_petListWidget->addItem(tr("Renard (Défaut)"));
+    auto* defaultItem = new QListWidgetItem(tr("Renard (Défaut)"), m_petListWidget);
+    defaultItem->setData(Qt::UserRole, PetLoader::DEFAULT_FOX_ID);
 
 	//Scan du dossier des compagnons
 	QString baseAppData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -93,7 +97,8 @@ void PetCustomizer::populatePetList()
 		for (const QString& folderName : petFolders) {
             QDir subDir(petsDir.filePath(folderName));
             if (subDir.exists("pet.json")) {
-				m_petListWidget->addItem(folderName);
+                auto* customItem = new QListWidgetItem(folderName, m_petListWidget);
+                customItem->setData(Qt::UserRole, folderName);
             }
 		}
 	}
@@ -103,44 +108,21 @@ void PetCustomizer::updatePreview()
 {
     m_previewLabel->clear();
     auto* currentItem = m_petListWidget->currentItem();
-    if (!currentItem) return;
-
-    QString petName = currentItem->text();
-
-    // Cas du compagnon par défaut
-    if (petName == tr("Renard (Défaut)")) {
-        QPixmap defaultPix(":/resources/renard/idle/frame_0.png");
-        if (!defaultPix.isNull()) {
-            m_previewLabel->setPixmap(defaultPix.scaled(m_previewLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        }
+    if (!currentItem) {
+        m_previewLabel->clear();
         return;
     }
 
-    // Cas d'un compagnon personnalisé (lecture de pet.json)
-    QString baseAppData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir petDir(QDir::cleanPath(baseAppData + "/pets/" + petName));
-    QFile jsonFile(petDir.filePath("pet.json"));
+    QString petId = currentItem->data(Qt::UserRole).toString();
 
-    if (jsonFile.open(QIODevice::ReadOnly)) {
-        QJsonObject json = QJsonDocument::fromJson(jsonFile.readAll()).object();
-        jsonFile.close();
+    // Utilisation de PetLoader pour récupérer les données d'animation
+    PetAnimationData petData = PetLoader::loadPet(petId);
+    QString previewPath = petData.getFirstAvailableFrame();
 
-        // Récupère la première image disponible (priorité : idle -> walk -> sleep)
-        auto getFirstFrame = [&json](const QString& category) -> QString {
-            QJsonArray arr = json[category].toArray();
-            return arr.isEmpty() ? QString() : arr.first().toString();
-            };
-
-        QString relPath = getFirstFrame("idle");
-        if (relPath.isEmpty()) relPath = getFirstFrame("walk");
-        if (relPath.isEmpty()) relPath = getFirstFrame("sleep");
-
-        if (!relPath.isEmpty()) {
-            QString fullPath = petDir.filePath(relPath);
-            QPixmap pix(fullPath);
-            if (!pix.isNull()) {
-                m_previewLabel->setPixmap(pix.scaled(m_previewLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            }
+    if (!previewPath.isEmpty()) {
+        QPixmap pix(previewPath);
+        if (!pix.isNull()) {
+            m_previewLabel->setPixmap(pix.scaled(m_previewLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
         }
     }
 }
@@ -150,8 +132,10 @@ void PetCustomizer::deleteSelectedPet()
     auto* currentItem = m_petListWidget->currentItem();
     if (!currentItem) return;
 
-    QString petName = currentItem->text();
-    if (petName == tr("Renard (Défaut)")) {
+    QString petId = currentItem->data(Qt::UserRole).toString();
+
+    // Sécurité : Interdiction de supprimer le compagnon par défaut
+    if (petId == PetLoader::DEFAULT_FOX_ID) {
         QMessageBox::information(this, tr("Info"), tr("Impossible de supprimer le compagnon par défaut."));
         return;
     }
@@ -159,16 +143,16 @@ void PetCustomizer::deleteSelectedPet()
     auto reply = QMessageBox::question(
         this,
         tr("Confirmation"),
-        tr("Voulez-vous vraiment supprimer le compagnon '%1' ?").arg(petName),
+        tr("Voulez-vous vraiment supprimer le compagnon '%1' ?").arg(currentItem->text()),
         QMessageBox::Yes | QMessageBox::No
     );
 
     if (reply == QMessageBox::Yes) {
         QString baseAppData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-        QDir petDir(QDir::cleanPath(baseAppData + "/pets/" + petName));
+        QDir petDir(QDir::cleanPath(baseAppData + "/pets/" + petId));
 
         if (petDir.exists()) {
-            petDir.removeRecursively(); // Suppression propre du dossier et de ses sous-fichiers
+            petDir.removeRecursively(); // Suppression propre du dossier et des assets
         }
 
         populatePetList();

@@ -26,11 +26,8 @@ int main(int argc, char* argv[])
         return 0;
 
 	auto* w = new Companion();
+    w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
 
-	int result = a.exec();
-
-	delete w;
-
-    return result;
+	return a.exec();
 }

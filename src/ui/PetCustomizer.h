@@ -14,19 +14,21 @@ public:
 	explicit PetCustomizer(QWidget* parent = nullptr);
 
 signals:
-	void petSelected(const QString& petName);
+	void petSelected(const QString& petId);
 
 protected:
 	void changeEvent(QEvent* event) override;
+
+private slots:
+	void openAddSpritesDialog();
+	void updatePreview();
+	void deleteSelectedPet();
 
 private:
 	void setupUI();
 	void loadStylesheet();
 	void retranslateUI();
 	void populatePetList();
-	void openAddSpritesDialog();
-	void updatePreview();
-	void deleteSelectedPet();
 
 	QListWidget* m_petListWidget{ nullptr };
 	QLabel* m_previewLabel{ nullptr };
