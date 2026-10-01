@@ -9,6 +9,7 @@
 #include "commun/AppInitializer.h"
 #include "ui/Companion.h"
 #include "commun/TranslationManager.h"
+#include "core/PetLoader.h"
 
 int main(int argc, char* argv[])
 {
@@ -26,6 +27,7 @@ int main(int argc, char* argv[])
         return 0;
 
 	auto* w = new Companion();
+	w->loadPet(AppInitializer::getSavedPetId());
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
 

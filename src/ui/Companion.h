@@ -10,6 +10,7 @@
 #include "../core/PetLoader.h"
 
 class ActionMenu;
+class AnimationEngine;
 
 class Companion : public QWidget
 {
@@ -23,21 +24,33 @@ public:
 
     void setScale(float newScale);
     void setSprite(const QString& imagePath);
-
     void setPetAnimationData(const PetAnimationData& data);
+    void setWalkModeEnabled(bool enabled);
+	void loadPet(const QString& petId);
+
+	bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
 
+private slots:
+	void onInactivityTimeout();
+
 private:
+	void resetInactivityTimer();
+    void updateAnimationState();
+
     QPixmap m_pixmap;
     QString m_currentImagePath;
     QPoint m_dragPosition;
     QPointer<ActionMenu> m_activeMenu = nullptr;
+	QTimer* m_inactivityTimer;
 
     float m_scale{ 0.5f };
+	bool m_isWalkModeEnabled = false;
 
     PetAnimationData m_currentPetData;
+	AnimationEngine* m_animationEngine = nullptr;
 };

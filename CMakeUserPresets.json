@@ -24,6 +24,19 @@
       ]
     },
     {
+      "name": "Debug-linux-x64",
+      "displayName": "Debug Linux x64",
+      "binaryDir": "${sourceDir}/out/build/debug",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "OPENSSL_ROOT_DIR": "/usr"
+      },
+      "inherits": [
+        "Qt-Default"
+      ]
+    },
+    {
       "hidden": true,
       "name": "Qt-Default",
       "inherits": "6.10.2_msvc2022_64",
@@ -108,7 +121,7 @@
   ],
   "vendor": {
     "qt-project.org/Presets": {
-      "checksum": "TGlu3qUxch/t5AC2Fgc0T1PprPE="
+      "checksum": "m59V8JRDKjyZO2lkIFr8914lz94="
     }
   }
 }

@@ -1,10 +1,13 @@
 #include "Companion.h"
 #include "ActionMenu.h"
 #include "../commun/TranslationManager.h"
+#include "../core/PetLoader.h"
+#include "../core/AnimationEngine.h"
 
 #include <QPainter>
 #include <QApplication>
 #include <QDebug>
+#include <QSettings>
 
 Companion::Companion(QWidget* parent)
     : QWidget(parent)
@@ -13,27 +16,48 @@ Companion::Companion(QWidget* parent)
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow | Qt::BypassWindowManagerHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_DeleteOnClose, false);
-
     setFixedSize(64, 64);
 
+    m_animationEngine = new AnimationEngine(this);
+    connect(m_animationEngine, &AnimationEngine::frameChanged, this, &Companion::setSprite);
+
+    m_inactivityTimer = new QTimer(this);
+    m_inactivityTimer->setInterval(15000);
+    m_inactivityTimer->setSingleShot(true);
+    connect(m_inactivityTimer, &QTimer::timeout, this, &Companion::onInactivityTimeout);
+
     setPetAnimationData(PetLoader::loadPet(PetLoader::DEFAULT_FOX_ID));
+
+	m_animationEngine->start();
+	resetInactivityTimer();
 }
 
 Companion::~Companion()
 {
-    // On libère la pixmap et le menu avant la destruction de l'objet
     m_pixmap = QPixmap();
     if (m_activeMenu) {
         m_activeMenu->deleteLater();
     }
 }
 
-void Companion::setPetAnimationData(const PetAnimationData& data) {
-    m_currentPetData = data;
+void Companion::loadPet(const QString& petId)
+{
+    PetAnimationData data = PetLoader::loadPet(petId);
+	m_currentPetData = data;
 
-    QString firstFrame = m_currentPetData.getFirstAvailableFrame();
-    if (!firstFrame.isEmpty()) {
-        setSprite(firstFrame);
+    if (m_animationEngine) {
+        m_animationEngine->setPetData(data);
+    }
+
+    QSettings settings;
+    settings.setValue("pet/selectedId", petId);
+}
+
+void Companion::setPetAnimationData(const PetAnimationData& data)
+{
+    m_currentPetData = data;
+    if (m_animationEngine) {
+        m_animationEngine->setPetData(data);
     }
 }
 
@@ -53,7 +77,6 @@ void Companion::setSprite(const QString& imagePath)
 
     QPixmap tempPixmap(imagePath);
 
-    // Si l'image n'est pas chargée, ON S'ARRÊTE LÀ
     if (tempPixmap.isNull()) {
         qWarning() << "[Companion] ERREUR: Impossible de charger le sprite :" << imagePath;
         return;
@@ -65,18 +88,51 @@ void Companion::setSprite(const QString& imagePath)
     int newW = static_cast<int>(m_pixmap.width() * m_scale);
     int newH = static_cast<int>(m_pixmap.height() * m_scale);
 
-    // Sécurité dimensions
     if (newW > 0 && newH > 0) {
         setFixedSize(newW, newH);
         update();
     }
 }
 
+// --- LOGIQUE DES ÉTATS ET TIMERS ---
+
+void Companion::resetInactivityTimer()
+{
+	m_inactivityTimer->start();
+	updateAnimationState();
+}
+
+void Companion::onInactivityTimeout()
+{
+	if (m_animationEngine) {
+		m_animationEngine->setState(AnimationEngine::AnimationState::Sleeping);
+	}
+}
+
+void Companion::updateAnimationState()
+{
+    if (!m_animationEngine) return;
+    
+    if(m_isWalkModeEnabled) {
+		m_animationEngine->setState(AnimationEngine::AnimationState::Walking);
+	}
+	else {
+		m_animationEngine->setState(AnimationEngine::AnimationState::Idle);
+	}
+}
+
+void Companion::setWalkModeEnabled(bool enabled)
+{
+	m_isWalkModeEnabled = enabled;
+	resetInactivityTimer();
+}
+
+// --- ÉVÉNEMENTS UI ---
+
 void Companion::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
-    // Protection absolue contre le crash dans le moteur de rendu Qt
     if (m_pixmap.isNull() || width() <= 0 || height() <= 0) {
         return;
     }
@@ -88,6 +144,8 @@ void Companion::paintEvent(QPaintEvent* event)
 
 void Companion::mousePressEvent(QMouseEvent* event)
 {
+	resetInactivityTimer();
+
     if (event->button() == Qt::LeftButton)
     {
         m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
@@ -100,15 +158,18 @@ void Companion::mousePressEvent(QMouseEvent* event)
             m_activeMenu->deleteLater();
         }
 
-		auto* menu = new ActionMenu(nullptr);
+		auto* menu = new ActionMenu(isWalkModeEnabled(), nullptr);
         m_activeMenu = menu;
 
-        connect(menu, &ActionMenu::petChangedRequested, this, [this](const QString& petId) {
-            PetAnimationData newPet = PetLoader::loadPet(petId);
-            setPetAnimationData(newPet);
-        }, Qt::QueuedConnection);
+		QString currentFrame = m_currentPetData.getFirstAvailableFrame();
+		if (!currentFrame.isEmpty()) {
+			menu->setPetIcon(currentFrame);
+		}
 
-        // Connexion directe au TranslationManager
+        connect(menu, &ActionMenu::walkModeToggled, this, &Companion::setWalkModeEnabled);
+
+        connect(menu, &ActionMenu::petChangedRequested, this, &Companion::loadPet, Qt::QueuedConnection);
+
         connect(menu, &ActionMenu::languageChangedRequested, this, [](const QString& langCode) {
             TranslationManager::instance().setLanguage(langCode);
         });
@@ -119,7 +180,7 @@ void Companion::mousePressEvent(QMouseEvent* event)
         });
 
         connect(menu, &ActionMenu::closeAppsRequested, this, [this]() {
-            // gic pour fermer les appsLo
+            // Logic pour fermer les apps
         });
 
 		connect(menu, &ActionMenu::openExplorerRequested, this, [this]() {
@@ -143,6 +204,7 @@ void Companion::mouseMoveEvent(QMouseEvent* event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
+		resetInactivityTimer();
         move(event->globalPosition().toPoint() - m_dragPosition);
         event->accept();
     }

@@ -14,8 +14,38 @@
 #include <QHBoxLayout>
 #include <QStyle>
 #include <QPointer>
+#include <QCheckBox>
 
-ActionMenu::ActionMenu(QWidget* parent)
+class ToggleSwitch : public QCheckBox {
+public:
+    explicit ToggleSwitch(QWidget* parent = nullptr) : QCheckBox(parent) {
+        setCursor(Qt::PointingHandCursor);
+        setFixedSize(40, 22);
+        setStyleSheet(R"(
+            QCheckBox::indicator {
+                width: 38px;
+                height: 20px;
+                border-radius: 10px;
+                border: 1px solid #494D64;
+            }
+            QCheckBox::indicator:unchecked {
+                background-color: #363A4F;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #F5A97F;
+                border-color: #F5A97F;
+            }
+            QCheckBox::indicator:unchecked:hover {
+                background-color: #494D64;
+            }
+            QCheckBox::indicator:checked:hover {
+                background-color: #EE996F;
+            }
+        )");
+    }
+};
+
+ActionMenu::ActionMenu(bool isWalkModeEnabled, QWidget* parent)
     : QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
@@ -23,7 +53,7 @@ ActionMenu::ActionMenu(QWidget* parent)
 
     setAttribute(Qt::WA_DeleteOnClose);
 
-    setupUI();
+    setupUI(isWalkModeEnabled);
     retranslateUi();
     loadStyleSheet();
 
@@ -32,28 +62,32 @@ ActionMenu::ActionMenu(QWidget* parent)
     m_isInitializing = false;
 }
 
-void ActionMenu::setupUI()
+void ActionMenu::setupUI(bool isWalkModeEnabled)
 {
     auto* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(18, 18, 18, 18);
-    mainLayout->setSpacing(10);
+    mainLayout->setContentsMargins(12, 12, 12, 12);
+    mainLayout->setSpacing(8);
 
     // --- EN-TÊTE ---
     auto* headerLayout = new QHBoxLayout();
+    headerLayout->setSpacing(8);
 
-    // Bouton de pet interactif
+    m_langComboBox = new QComboBox(this);
+    m_langComboBox->setObjectName("langCombo");
+    m_langComboBox->setCursor(Qt::PointingHandCursor);
+    m_langComboBox->addItem("FR", "fr");
+    m_langComboBox->addItem("EN", "en");
+    m_langComboBox->addItem("JA", "ja");
+
     m_btnPet = new QPushButton(this);
     m_btnPet->setObjectName("petBtn");
     m_btnPet->setCursor(Qt::PointingHandCursor);
     m_btnPet->setFixedSize(32, 32);
-    m_btnPet->setFlat(true); // Transparent de base
+    m_btnPet->setFlat(true);
 
-    // Chargement de l'icône initiale via PetLoader (Renard par défaut)
     PetAnimationData defaultPet = PetLoader::loadPet(PetLoader::DEFAULT_FOX_ID);
     QString initialIcon = defaultPet.getFirstAvailableFrame();
-
-    if (!initialIcon.isEmpty())
-    {
+    if (!initialIcon.isEmpty()) {
         QPixmap petPixmap(initialIcon);
         if (!petPixmap.isNull()) {
             m_btnPet->setIcon(QIcon(petPixmap.scaled(28, 28, Qt::KeepAspectRatio, Qt::FastTransformation)));
@@ -61,67 +95,66 @@ void ActionMenu::setupUI()
         }
     }
 
-    // ComboBox de langues
-    m_langComboBox = new QComboBox(this);
-    m_langComboBox->setObjectName("langCombo");
-    m_langComboBox->setCursor(Qt::PointingHandCursor);
-
-    m_langComboBox->addItem("FR", "fr");
-    m_langComboBox->addItem("EN", "en");
-    m_langComboBox->addItem("JA", "ja");
-
-    auto* btnSettings = new QPushButton("⚙️", this);
-    btnSettings->setObjectName("iconBtn");
-    btnSettings->setCursor(Qt::PointingHandCursor);
+    auto* toggleWalk = new ToggleSwitch(this);
+    toggleWalk->setChecked(isWalkModeEnabled);
 
     headerLayout->addWidget(m_langComboBox);
     headerLayout->addWidget(m_btnPet);
     headerLayout->addStretch();
-    headerLayout->addWidget(btnSettings);
+    headerLayout->addWidget(toggleWalk);
 
     mainLayout->addLayout(headerLayout);
 
-    // --- ACTIONS D'APPLICATIONS ---
+    // --- CORPS (Boutons standard) ---
     auto* btnGrid = new QHBoxLayout();
+    btnGrid->setSpacing(8);
 
-    m_btnLaunch = new QPushButton(this);
+    m_btnLaunch = new QPushButton(tr("Lancer apps"), this);
     m_btnLaunch->setCursor(Qt::PointingHandCursor);
 
-    m_btnClose = new QPushButton(this);
+    m_btnClose = new QPushButton(tr("Quitter apps"), this);
     m_btnClose->setCursor(Qt::PointingHandCursor);
 
     btnGrid->addWidget(m_btnLaunch);
     btnGrid->addWidget(m_btnClose);
     mainLayout->addLayout(btnGrid);
 
-    // --- EXPLORATEUR ---
-    m_btnExplorer = new QPushButton(this);
+    m_btnExplorer = new QPushButton(tr("Explorateur de fichiers"), this);
     m_btnExplorer->setCursor(Qt::PointingHandCursor);
     mainLayout->addWidget(m_btnExplorer);
 
-    // --- FERMETURE APPLICATION ---
-    m_btnQuit = new QPushButton(this);
-    m_btnQuit->setObjectName("quitBtn");
-    m_btnQuit->setCursor(Qt::PointingHandCursor);
-    mainLayout->addWidget(m_btnQuit);
+    // --- PIED DE PAGE (Quitter + Paramètres) ---
+    auto* footerLayout = new QHBoxLayout();
+    footerLayout->setSpacing(8);
 
-    // --- CONNEXIONS DES SIGNAUX ---
+    m_btnQuit = new QPushButton(tr("Quitter Echo"), this);
+    m_btnQuit->setObjectName("quitBtn"); // Attribue le style alerte pastel
+    m_btnQuit->setCursor(Qt::PointingHandCursor);
+
+    auto* btnSettings = new QPushButton("⚙️", this);
+    btnSettings->setObjectName("iconBtn"); // Attribue le style rond 26x26px
+    btnSettings->setCursor(Qt::PointingHandCursor);
+
+    footerLayout->addWidget(m_btnQuit, 1);
+    footerLayout->addWidget(btnSettings);
+
+    mainLayout->addLayout(footerLayout);
+
+    // --- CONNEXIONS ---
+    connect(toggleWalk, &QCheckBox::toggled, this, [this](bool checked) {
+        emit walkModeToggled(checked);
+        });
+
     connect(m_btnPet, &QPushButton::clicked, this, [this]() {
         this->hide();
-
-        // Allocation dynamique sur le tas
         auto* customizer = new PetCustomizer(nullptr);
         customizer->setAttribute(Qt::WA_DeleteOnClose);
-
         connect(customizer, &PetCustomizer::petSelected, this, [this](const QString& petId) {
             emit petChangedRequested(petId);
             });
-
         customizer->exec();
-
-        // Au lieu de close() immédiat qui tue la mémoire pendant le signal, on planifie la suppression
         this->deleteLater();
-    });
+        });
 
     connect(m_btnLaunch, &QPushButton::clicked, this, [this]() { emit launchAppsRequested(); close(); });
     connect(m_btnClose, &QPushButton::clicked, this, [this]() { emit closeAppsRequested(); close(); });
@@ -192,6 +225,15 @@ void ActionMenu::paintEvent(QPaintEvent* event)
 
     painter.fillPath(path, backgroundColor);
     painter.strokePath(path, QPen(borderColor, 2));
+}
+
+void ActionMenu::setPetIcon(const QString& iconPath)
+{
+	if (m_btnPet && !iconPath.isEmpty())
+	{
+		m_btnPet->setIcon(QIcon(iconPath));
+		m_btnPet->setIconSize(QSize(32, 32));
+	}
 }
 
 void ActionMenu::loadStyleSheet()
