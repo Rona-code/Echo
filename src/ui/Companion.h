@@ -20,9 +20,11 @@ public:
     explicit Companion(QWidget* parent = nullptr);
     ~Companion() override;
 
-    float setScale() const { return m_scale; }
+    float scale() const { return m_scale; }
 
     void setScale(float newScale);
+	void setAnimationSpeed(int intervalMs);
+	void setInactivityTimeout(int seconds);
     void setSprite(const QString& imagePath);
     void setPetAnimationData(const PetAnimationData& data);
     void setWalkModeEnabled(bool enabled);
@@ -50,6 +52,7 @@ private:
 
     float m_scale{ 0.5f };
 	bool m_isWalkModeEnabled = false;
+	int m_animSpeed = 500;
 
     PetAnimationData m_currentPetData;
 	AnimationEngine* m_animationEngine = nullptr;

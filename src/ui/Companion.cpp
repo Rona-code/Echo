@@ -3,6 +3,7 @@
 #include "../commun/TranslationManager.h"
 #include "../core/PetLoader.h"
 #include "../core/AnimationEngine.h"
+#include "SettingsDialog.h"
 
 #include <QPainter>
 #include <QApplication>
@@ -12,17 +13,22 @@
 Companion::Companion(QWidget* parent)
     : QWidget(parent)
 {
-    m_scale = 0.2f;
+	QSettings settings;
+	m_scale = settings.value("pet/scale", 0.5f).toFloat();
+	m_animSpeed = settings.value("pet/animSpeed", 500).toInt();
+	int idleTimeoutSec = settings.value("pet/idleTimeout", 15).toInt();
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow | Qt::BypassWindowManagerHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_DeleteOnClose, false);
     setFixedSize(64, 64);
 
     m_animationEngine = new AnimationEngine(this);
+	m_animationEngine->setInterval(m_animSpeed);
     connect(m_animationEngine, &AnimationEngine::frameChanged, this, &Companion::setSprite);
 
     m_inactivityTimer = new QTimer(this);
-    m_inactivityTimer->setInterval(15000);
+    m_inactivityTimer->setInterval(idleTimeoutSec * 1000);
     m_inactivityTimer->setSingleShot(true);
     connect(m_inactivityTimer, &QTimer::timeout, this, &Companion::onInactivityTimeout);
 
@@ -34,10 +40,10 @@ Companion::Companion(QWidget* parent)
 
 Companion::~Companion()
 {
-    m_pixmap = QPixmap();
+    /*m_pixmap = QPixmap();
     if (m_activeMenu) {
         m_activeMenu->deleteLater();
-    }
+    }*/
 }
 
 void Companion::loadPet(const QString& petId)
@@ -121,6 +127,20 @@ void Companion::updateAnimationState()
 	}
 }
 
+void Companion::setAnimationSpeed(int intervalMs)
+{
+	if (intervalMs <= 0 || !m_animationEngine) return;
+	m_animSpeed = intervalMs;
+	m_animationEngine->setInterval(intervalMs);
+}
+
+void Companion::setInactivityTimeout(int seconds)
+{
+	if (seconds <= 0 || !m_inactivityTimer) return;
+	m_inactivityTimer->setInterval(seconds * 1000);
+	resetInactivityTimer();
+}
+
 void Companion::setWalkModeEnabled(bool enabled)
 {
 	m_isWalkModeEnabled = enabled;
@@ -188,7 +208,27 @@ void Companion::mousePressEvent(QMouseEvent* event)
 	    });
 
 		connect(menu, &ActionMenu::settingsRequested, this, [this]() {
-			// Logic pour ouvrir les paramètres
+            auto* dialog = new SettingsDialog(this);
+
+            // 1. Récupération des valeurs actuelles
+            int currentTimeoutSec = m_inactivityTimer ? (m_inactivityTimer->interval() / 1000) : 15;
+			int currentAnimSpeed = m_animSpeed;
+
+            dialog->setValues(m_scale, currentAnimSpeed, currentTimeoutSec);
+
+            // 2. Application des réglages
+            connect(dialog, &SettingsDialog::settingsChanged, this, [this](double scale, int speed, int timeout) {
+                setScale(static_cast<float>(scale));
+                setAnimationSpeed(speed);
+                setInactivityTimeout(timeout);
+
+                QSettings settings;
+                settings.setValue("pet/scale", scale);
+                settings.setValue("pet/animSpeed", speed);
+                settings.setValue("pet/idleTimeout", timeout);
+            });
+
+            dialog->exec();
 		});
 
 		connect(menu, &ActionMenu::quitRequested, this, []() {
