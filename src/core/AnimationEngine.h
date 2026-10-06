@@ -28,6 +28,9 @@ public:
 	void stop();
 	void setInterval(int intervalMs);
 
+	void setFlipped(bool flipped);
+	bool isFlipped() const { return m_isFlipped; }
+
 signals:
 	void frameChanged(const QString& framePath);
 
@@ -39,7 +42,10 @@ private:
 	QStringList getCurrentFrameList() const;
 
 	int m_currentFrameIndex = 0;
+	bool m_isFlipped{ false };
 
 	PetAnimationData m_petData;
 	AnimationState m_currentState = AnimationState::Idle;
+
+	void updateFrame();
 };

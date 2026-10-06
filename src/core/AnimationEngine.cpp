@@ -65,3 +65,23 @@ void AnimationEngine::onTimeout()
 	emit frameChanged(frames.at(m_currentFrameIndex));
 	m_currentFrameIndex++;
 }
+
+void AnimationEngine::setFlipped(bool flipped)
+{
+	if (m_isFlipped != flipped) {
+		m_isFlipped = flipped;
+		updateFrame();
+	}
+}
+
+void AnimationEngine::updateFrame()
+{
+	QStringList frames = getCurrentFrameList();
+	if (frames.isEmpty()) return;
+
+	if (m_currentFrameIndex >= frames.size()) {
+		m_currentFrameIndex = 0;
+	}
+
+	emit frameChanged(frames.at(m_currentFrameIndex));
+}
