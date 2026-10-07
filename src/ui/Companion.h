@@ -9,6 +9,7 @@
 #include <QPropertyAnimation>
 
 #include "../core/PetLoader.h"
+#include "ActionMenu.h"
 
 class ActionMenu;
 class AnimationEngine;

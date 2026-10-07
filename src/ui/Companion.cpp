@@ -210,6 +210,7 @@ void Companion::mousePressEvent(QMouseEvent* event)
 		if (m_activeMenu) {
 			m_activeMenu->close();
 			m_activeMenu->deleteLater();
+			m_activeMenu = nullptr;
 		}
 
 		auto* menu = new ActionMenu(isWalkModeEnabled(), nullptr);
@@ -221,9 +222,7 @@ void Companion::mousePressEvent(QMouseEvent* event)
 		}
 
 		connect(menu, &ActionMenu::walkModeToggled, this, &Companion::setWalkModeEnabled);
-
 		connect(menu, &ActionMenu::petChangedRequested, this, &Companion::loadPet, Qt::QueuedConnection);
-
 		connect(menu, &ActionMenu::languageChangedRequested, this, [](const QString& langCode) {
 			TranslationManager::instance().setLanguage(langCode);
 			});
