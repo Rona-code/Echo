@@ -7,18 +7,14 @@
 #include <QPoint>
 #include <QPointer>
 #include <QPropertyAnimation>
+#include <QTimer>
 
 #include "../core/PetLoader.h"
-#include "ActionMenu.h"
+#include "../core/PhysicsController.h"
+#include "../core/BehaviorController.h"
 
 class ActionMenu;
 class AnimationEngine;
-
-enum class CompanionState {
-    Idle,
-    Walking,
-	Sleeping
-};
 
 class Companion : public QWidget
 {
@@ -29,16 +25,15 @@ public:
     ~Companion() override;
 
     float scale() const { return m_scale; }
-
     void setScale(float newScale);
-	void setAnimationSpeed(int intervalMs);
-	void setInactivityTimeout(int seconds);
+    void setAnimationSpeed(int intervalMs);
+    void setInactivityTimeout(int seconds);
     void setSprite(const QString& imagePath);
     void setPetAnimationData(const PetAnimationData& data);
     void setWalkModeEnabled(bool enabled);
-	void loadPet(const QString& petId);
+    void loadPet(const QString& petId);
 
-	bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
+    bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -46,34 +41,32 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
 
 private slots:
-	void onInactivityTimeout();
+    void onInactivityTimeout();
     void updateBehavior();
 
 private:
-	void setupBehavior();
-	void resetInactivityTimer();
+    void setupTimers();
+    void resetInactivityTimer();
     void updateAnimationState();
-	void updateMovement();
-    void chooseNextState();
-
-	CompanionState m_state{ CompanionState::Idle };
+    QRect getScreenBounds() const;
 
     QPixmap m_pixmap;
     QString m_currentImagePath;
     QPoint m_dragPosition;
-    QPointer<ActionMenu> m_activeMenu = nullptr;
-	QTimer* m_inactivityTimer;
-	QTimer* m_behaviorTimer{nullptr};
-    QPointF m_targetPos;
-	QRect getScreenBounds() const;
-	QPropertyAnimation* m_bounceAnim = nullptr;
 
-	float m_moveSpeed{ 2.0f };
+    QPointer<ActionMenu> m_activeMenu = nullptr;
+    QTimer* m_inactivityTimer{ nullptr };
+    QTimer* m_behaviorTimer{ nullptr };
+    QPropertyAnimation* m_bounceAnim{ nullptr };
+
+    float m_moveSpeed{ 2.0f };
     float m_scale{ 0.5f };
-	bool m_isWalkModeEnabled = false;
-	int m_animSpeed = 500;
-    int m_stateTicks{ 0 };
+    bool m_isWalkModeEnabled{ false };
+    int m_animSpeed{ 500 };
 
     PetAnimationData m_currentPetData;
-	AnimationEngine* m_animationEngine = nullptr;
+    AnimationEngine* m_animationEngine{ nullptr };
+
+    PhysicsController m_physics;
+    BehaviorController m_behavior;
 };

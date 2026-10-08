@@ -147,6 +147,7 @@ endif()
 if (UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} 
         PRIVATE 
-        
+        find_package(X11 REQUIRED)
+        target_link_libraries(Echo PRIVATE ${X11_LIBRARIES})
     )
 endif()
