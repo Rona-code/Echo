@@ -18,9 +18,18 @@ struct PetAnimationData {
 	QStringList sleepFrames;
 
 	QString getFirstAvailableFrame() const {
-		if (!walkFrames.isEmpty() && !walkFrames.first().isEmpty()) return walkFrames.first();
-		if (!idleFrames.isEmpty() && !idleFrames.first().isEmpty()) return idleFrames.first();
-		if (!sleepFrames.isEmpty() && !sleepFrames.first().isEmpty()) return sleepFrames.first();
+		if (!walkFrames.isEmpty()) {
+			const QString& frame = walkFrames.first();
+			if (!frame.isEmpty()) return frame;
+		}
+		if (!idleFrames.isEmpty()) {
+			const QString& frame = idleFrames.first();
+			if (!frame.isEmpty()) return frame;
+		}
+		if (!sleepFrames.isEmpty()) {
+			const QString& frame = sleepFrames.first();
+			if (!frame.isEmpty()) return frame;
+		}
 		return QString();
 	}
 };

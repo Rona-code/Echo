@@ -1,11 +1,11 @@
 #pragma once
 #include <QRect>
+#include <QPoint>
 
-enum class CompanionState {
-    Idle,
-    Walking,
-    Sleeping
-};
+enum class CompanionState { Idle, Walking, Sleeping };
+
+class PhysicsController;
+class AnimationEngine;
 
 class BehaviorController {
 public:
@@ -13,16 +13,23 @@ public:
 
     CompanionState state() const { return m_state; }
     void setState(CompanionState state) { m_state = state; }
+    void setTicks(int ticks) { m_stateTicks = ticks; }
 
-    float targetX() const { return m_targetX; }
-    int stateTicks() const { return m_stateTicks; }
-
-    void decrementTicks() { if (m_stateTicks > 0) m_stateTicks--; }
-    bool isTicksExpired() const { return m_stateTicks <= 0; }
-
-    void chooseNextState(const QRect& screenBounds, int companionWidth);
+    void processBehaviorTick(
+        QPoint currentPos,
+        int width, int height,
+        const QRect& screenBounds,
+        bool isWalkModeEnabled,
+        float moveSpeed,
+        PhysicsController& physics,
+        AnimationEngine* animEngine,
+        std::function<void(const QPoint&)> moveCallback,
+        std::function<void()> resetInactivityCallback
+    );
 
 private:
+    void chooseNextState(const QRect& screenBounds, int companionWidth, AnimationEngine* animEngine);
+
     CompanionState m_state{ CompanionState::Idle };
     float m_targetX{ 0.0f };
     int m_stateTicks{ 0 };

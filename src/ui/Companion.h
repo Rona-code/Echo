@@ -2,8 +2,6 @@
 
 #include <QWidget>
 #include <QPixmap>
-#include <QString>
-#include <QMouseEvent>
 #include <QPoint>
 #include <QPointer>
 #include <QPropertyAnimation>
@@ -12,12 +10,12 @@
 #include "../core/PetLoader.h"
 #include "../core/PhysicsController.h"
 #include "../core/BehaviorController.h"
+#include "ActionMenu.h"
 
 class ActionMenu;
 class AnimationEngine;
 
-class Companion : public QWidget
-{
+class Companion : public QWidget {
     Q_OBJECT
 
 public:
@@ -25,36 +23,33 @@ public:
     ~Companion() override;
 
     float scale() const { return m_scale; }
-    void setScale(float newScale);
-    void setAnimationSpeed(int intervalMs);
-    void setInactivityTimeout(int seconds);
-    void setSprite(const QString& imagePath);
-    void setPetAnimationData(const PetAnimationData& data);
+    int animSpeed() const { return m_animSpeed; }
+    int inactivityTimeoutSec() const;
+    bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
+    const PetAnimationData& currentPetData() const { return m_currentPetData; }
+
+    void applySettings(float scale, int speedMs, int timeoutSec);
     void setWalkModeEnabled(bool enabled);
     void loadPet(const QString& petId);
+    void clearActiveMenu();
 
-    bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
+public slots:
+    void setSprite(const QString& imagePath);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
 
-private slots:
-    void onInactivityTimeout();
-    void updateBehavior();
-
 private:
-    void setupTimers();
     void resetInactivityTimer();
     void updateAnimationState();
-    QRect getScreenBounds() const;
+    void triggerBounce();
 
     QPixmap m_pixmap;
     QString m_currentImagePath;
     QPoint m_dragPosition;
 
-    QPointer<ActionMenu> m_activeMenu = nullptr;
     QTimer* m_inactivityTimer{ nullptr };
     QTimer* m_behaviorTimer{ nullptr };
     QPropertyAnimation* m_bounceAnim{ nullptr };
@@ -66,7 +61,7 @@ private:
 
     PetAnimationData m_currentPetData;
     AnimationEngine* m_animationEngine{ nullptr };
-
+    ActionMenu* m_activeMenu{ nullptr };
     PhysicsController m_physics;
     BehaviorController m_behavior;
 };
