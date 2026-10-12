@@ -26,12 +26,15 @@ public:
     int animSpeed() const { return m_animSpeed; }
     int inactivityTimeoutSec() const;
     bool isWalkModeEnabled() const { return m_isWalkModeEnabled; }
+    bool isDragging() const;
+    bool isGrounded() const;
     const PetAnimationData& currentPetData() const { return m_currentPetData; }
 
     void applySettings(float scale, int speedMs, int timeoutSec);
     void setWalkModeEnabled(bool enabled);
     void loadPet(const QString& petId);
     void clearActiveMenu();
+	void setGrounded(bool grounded);
 
 public slots:
     void setSprite(const QString& imagePath);
@@ -57,6 +60,8 @@ private:
     float m_moveSpeed{ 2.0f };
     float m_scale{ 0.5f };
     bool m_isWalkModeEnabled{ false };
+	bool m_grounded = false;
+	bool m_isDragging = false;
     int m_animSpeed{ 500 };
 
     PetAnimationData m_currentPetData;
@@ -64,4 +69,5 @@ private:
     ActionMenu* m_activeMenu{ nullptr };
     PhysicsController m_physics;
     BehaviorController m_behavior;
+	std::unique_ptr<PhysicsController> m_physicsController;
 };

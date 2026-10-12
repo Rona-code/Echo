@@ -2,6 +2,7 @@
 #include "ActionMenu.h"
 #include "../core/CompanionMenuManager.h"
 #include "../core/AnimationEngine.h"
+#include "../core/WindowDetector.h"
 
 #include <QPainter>
 #include <QSettings>
@@ -29,6 +30,9 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
     connect(m_behaviorTimer, &QTimer::timeout, this, [this]() {
         QScreen* screen = QGuiApplication::screenAt(geometry().center());
         QRect screenBounds = screen ? screen->availableGeometry() : QGuiApplication::primaryScreen()->availableGeometry();
+
+		QList<QRect> windows = WindowDetector::getAllVisibleWindowGeometries();
+		m_physics.updatePhysics(this, windows, screenBounds);
 
         m_behavior.processBehaviorTick(
             pos(), width(), height(), screenBounds,
@@ -159,6 +163,20 @@ void Companion::mouseMoveEvent(QMouseEvent* event) {
         move(event->globalPosition().toPoint() - m_dragPosition);
         event->accept();
     }
+}
+
+// --- Getters / Setters pour la physique ---
+
+void Companion::setGrounded(bool grounded) {
+    m_grounded = grounded;
+}
+
+bool Companion::isGrounded() const {
+    return m_grounded;
+}
+
+bool Companion::isDragging() const {
+    return m_isDragging;
 }
 
 void Companion::clearActiveMenu() {

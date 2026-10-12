@@ -47,13 +47,6 @@ void BehaviorController::processBehaviorTick(
         return;
     }
 
-    // 2. Gravité
-    QPoint newPos = physics.applyGravity(currentPos, width, height, screenBounds);
-    if (newPos != currentPos) {
-        moveCallback(newPos);
-        return;
-    }
-
     if (!isWalkModeEnabled) {
         if (m_state == CompanionState::Walking) {
             m_state = CompanionState::Idle;
@@ -62,7 +55,7 @@ void BehaviorController::processBehaviorTick(
         return;
     }
 
-    // 3. Deplacement / Pause
+    // 2. Deplacement / Pause
     if (m_state == CompanionState::Walking) {
         bool isFlipped = false, reached = false;
         QPoint walkPos = physics.calculateNextWalkPosition(currentPos, m_targetX, moveSpeed, isFlipped, reached);
