@@ -15,6 +15,7 @@ class ActionMenu : public QWidget
 public:
 	explicit ActionMenu(bool isWalkModeEnabled, QWidget* parent = nullptr);
 	void setPetIcon(const QString& iconPath);
+	void popupAt(const QPoint& globalPos, const QRect& companionGeometry);
 
 signals:
 	void launchAppsRequested();

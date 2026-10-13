@@ -15,6 +15,8 @@
 #include <QStyle>
 #include <QPointer>
 #include <QCheckBox>
+#include <QScreen>
+#include <QGuiApplication>
 
 class ToggleSwitch : public QCheckBox {
 public:
@@ -244,4 +246,36 @@ void ActionMenu::loadStyleSheet()
         setStyleSheet(stream.readAll());
         file.close();
     }
+}
+
+void ActionMenu::popupAt(const QPoint& globalPos, const QRect& companionGeometry)
+{
+    adjustSize();
+
+    QScreen* screen = QGuiApplication::screenAt(globalPos);
+    QRect screenGeometry = screen ? screen->availableGeometry() : QGuiApplication::primaryScreen()->availableGeometry();
+
+    int menuWidth = width();
+    int menuHeight = height();
+
+    QPoint targetPos = globalPos;
+
+    // Vérifier si le menu dépasse en bas de l'écran
+    if (targetPos.y() + menuHeight > screenGeometry.bottom()) {
+        // Le placer au-dessus du compagnon
+        targetPos.setY(companionGeometry.top() - menuHeight - 5);
+    }
+
+    // Vérifier si le menu dépasse à droite de l'écran
+    if (targetPos.x() + menuWidth > screenGeometry.right()) {
+        targetPos.setX(screenGeometry.right() - menuWidth);
+    }
+
+    // Vérifier si le menu dépasse à gauche de l'écran
+    if (targetPos.x() < screenGeometry.left()) {
+        targetPos.setX(screenGeometry.left());
+    }
+
+    move(targetPos);
+    show();
 }

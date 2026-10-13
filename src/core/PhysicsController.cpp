@@ -32,27 +32,30 @@ void PhysicsController::updatePhysics(Companion* companion, const QList<QRect>& 
     bool foundGround = false;
 
 
-    for (const QRect& window : windowBounds)
+    for (int i = 0; i < windowBounds.size(); ++i)
     {
+        const QRect& window = windowBounds[i];
 
-        if (petCenterX >= window.left() && petCenterX <= window.right())
+        if (petCenterX < window.left() || petCenterX > window.right()) continue;
+
+        int windowTop = window.top();
+        if (windowTop < petBottomBefore - 20) continue;
+
+        bool occluded = false;
+        QPoint edgePoint(petCenterX, windowTop);
+        for (int j = 0; j < i; ++j) {
+            if (windowBounds[j].contains(edgePoint)) { occluded = true; break; }
+        }
+        if (occluded) continue;
+
+        int projectedBottom = petBottomBefore + static_cast<int>(m_verticalVelocity);
+
+        if (petBottomBefore <= windowTop && projectedBottom >= windowTop && m_verticalVelocity >= 0)
         {
-            int windowTop = window.top();
-
-            if (windowTop < petBottomBefore - 20) {
-                continue; 
-            }
-
-            int projectedBottom = petBottomBefore + static_cast<int>(m_verticalVelocity);
-
-            if (petBottomBefore <= windowTop && projectedBottom >= windowTop && m_verticalVelocity >= 0)
-            {
-                int candidateGroundY = windowTop - petHeight;
-
-                if (!foundGround || candidateGroundY < targetGroundY) {
-                    targetGroundY = candidateGroundY;
-                    foundGround = true;
-                }
+            int candidateGroundY = windowTop - petHeight;
+            if (!foundGround || candidateGroundY < targetGroundY) {
+                targetGroundY = candidateGroundY;
+                foundGround = true;
             }
         }
     }

@@ -165,8 +165,6 @@ void Companion::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-// --- Getters / Setters pour la physique ---
-
 void Companion::setGrounded(bool grounded) {
     m_grounded = grounded;
 }
