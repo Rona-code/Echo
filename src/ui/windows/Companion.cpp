@@ -1,14 +1,16 @@
 #include "Companion.h"
 #include "ActionMenu.h"
-#include "../core/CompanionMenuManager.h"
-#include "../core/AnimationEngine.h"
-#include "../core/WindowDetector.h"
+#include "CompanionMenuManager.h"
+#include "../../core/engine/AnimationEngine.h"
+#include "../../core/physics/WindowDetector.h"
+#include "../../core/managers/ReminderManager.h"
 
 #include <QPainter>
 #include <QSettings>
 #include <QScreen>
 #include <QGuiApplication>
 #include <QRandomGenerator>
+#include <QMessageBox>
 
 Companion::Companion(QWidget* parent) : QWidget(parent) {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow | Qt::BypassWindowManagerHint);
@@ -56,6 +58,13 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
     loadPet(PetLoader::DEFAULT_FOX_ID);
     m_animationEngine->start();
     m_behaviorTimer->start(50);
+
+    auto* reminderManager = new ReminderManager(this);
+    connect(reminderManager, &ReminderManager::reminderTriggered, this, [this](const QString& eventText) {
+        triggerBounce(); // Animation de saut
+        QString message = QString(tr("Hé ! Petit rappel pour aujourd'hui :\n\n\"%1\"\n\nNe l'oublie pas !")).arg(eventText);
+        QMessageBox::information(nullptr, tr("Alerte de ton Compagnon"), message);
+        });
 }
 
 Companion::~Companion() {

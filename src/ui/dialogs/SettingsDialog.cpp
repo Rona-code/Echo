@@ -17,7 +17,6 @@ void SettingsDialog::setupUI() {
     mainLayout->setContentsMargins(16, 16, 16, 16);
     mainLayout->setSpacing(12);
 
-    // Title
     auto* titleLabel = new QLabel(tr("Paramètres du Compagnon"), this);
     titleLabel->setObjectName("menuTitle");
     mainLayout->addWidget(titleLabel);
@@ -74,6 +73,23 @@ void SettingsDialog::setupUI() {
     timeoutLayout->addWidget(m_idleTimeoutSlider);
     mainLayout->addLayout(timeoutLayout);
 
+    // --- 4. HEURE DU RAPPEL (CALENDRIER) ---
+    auto* rappelLayout = new QHBoxLayout();
+    auto* rappelLabel = new QLabel(tr("Heure du rappel :"), this);
+    m_rappelTimeInput = new QLineEdit(this);
+    m_rappelTimeInput->setAlignment(Qt::AlignCenter);
+    m_rappelTimeInput->setFixedSize(80, 25);
+    m_rappelTimeInput->setToolTip(tr("Format requis : HH:mm"));
+
+    m_btnOpenCalendar = new QPushButton(tr("Gérer les alertes (Calendrier)"), this);
+    m_btnOpenCalendar->setCursor(Qt::PointingHandCursor);
+
+    rappelLayout->addWidget(rappelLabel);
+    rappelLayout->addWidget(m_rappelTimeInput);
+    rappelLayout->addStretch();
+    rappelLayout->addWidget(m_btnOpenCalendar);
+    mainLayout->addLayout(rappelLayout);
+
     mainLayout->addStretch();
 
     // --- BOUTON DE VALIDATION ---
@@ -95,10 +111,16 @@ void SettingsDialog::setupUI() {
         });
 
     connect(m_btnSave, &QPushButton::clicked, this, [this]() {
-        emit settingsChanged(scaleFactor(), animSpeedMs(), idleTimeoutSec());
+        emit settingsChanged(scaleFactor(), animSpeedMs(), idleTimeoutSec(), rappelTime());
         accept();
         });
+
+    connect(m_btnOpenCalendar, &QPushButton::clicked, this, [this]() {
+        emit openCalendarRequested();
+        });
 }
+
+
 
 double SettingsDialog::scaleFactor() const {
     return m_scaleSlider->value() / 100.0;
@@ -112,10 +134,15 @@ int SettingsDialog::idleTimeoutSec() const {
     return m_idleTimeoutSlider->value();
 }
 
-void SettingsDialog::setValues(double scale, int animSpeed, int idleTimeout) {
+QString SettingsDialog::rappelTime() const {
+    return m_rappelTimeInput ? m_rappelTimeInput->text().trimmed() : "08:00";
+}
+
+void SettingsDialog::setValues(double scale, int animSpeed, int idleTimeout, const QString& rappelTime) {
     m_scaleSlider->setValue(static_cast<int>(scale * 100.0));
     m_animSpeedSlider->setValue(animSpeed);
     m_idleTimeoutSlider->setValue(idleTimeout);
+    m_rappelTimeInput->setText(rappelTime);
 
     m_scaleValLabel->setText(QString("%1x").arg(scale, 0, 'f', 2));
     m_animSpeedValLabel->setText(QString("%1 ms").arg(animSpeed));

@@ -48,17 +48,23 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 file(GLOB_RECURSE SOURCES
     "${CMAKE_SOURCE_DIR}/src/commun/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/commun/security/*.cpp"
-    "${CMAKE_SOURCE_DIR}/src/modules/*.cpp"
-    "${CMAKE_SOURCE_DIR}/src/ui/*.cpp"
-    "${CMAKE_SOURCE_DIR}/src/core/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/ui/components/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/ui/dialogs/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/ui/windows/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/core/engine/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/core/managers/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/core/physics/*.cpp"
 )
 
 file(GLOB_RECURSE HEADERS
     "${CMAKE_SOURCE_DIR}/src/commun/*.h"
     "${CMAKE_SOURCE_DIR}/src/commun/security/*.h"
-    "${CMAKE_SOURCE_DIR}/src/modules/*.h"
-    "${CMAKE_SOURCE_DIR}/src/ui/*.h"
-    "${CMAKE_SOURCE_DIR}/src/core/*.h"
+    "${CMAKE_SOURCE_DIR}/src/ui/components/*.h"
+    "${CMAKE_SOURCE_DIR}/src/ui/dialogs/*.h"
+    "${CMAKE_SOURCE_DIR}/src/ui/windows/*.h"
+    "${CMAKE_SOURCE_DIR}/src/core/engine/*.h"
+    "${CMAKE_SOURCE_DIR}/src/core/managers/*.h"
+    "${CMAKE_SOURCE_DIR}/src/core/physics/*.h"
 )
 
 # -------------------------

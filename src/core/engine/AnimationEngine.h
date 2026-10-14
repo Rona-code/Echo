@@ -3,8 +3,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QStringList>
-
-#include "PetLoader.h"
+#include "../managers/PetLoader.h"
 
 class AnimationEngine : public QObject
 {

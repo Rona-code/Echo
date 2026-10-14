@@ -1,9 +1,10 @@
 #include "CompanionMenuManager.h"
-#include "../ui/Companion.h"
-#include "../ui/ActionMenu.h"
-#include "../ui/SettingsDialog.h"
-#include "../ui/ExplorerWindow.h"
-#include "../commun/TranslationManager.h"
+#include "Companion.h"
+#include "ActionMenu.h"
+#include "ExplorerWindow.h"
+#include "CalendarWindow.h"
+#include "../dialogs/SettingsDialog.h"
+#include "../../commun/TranslationManager.h"
 
 #include <QApplication>
 #include <QSettings>
@@ -54,16 +55,38 @@ ActionMenu* CompanionMenuManager::showContextMenu(Companion* companion, const QP
 
     QObject::connect(menu, &ActionMenu::settingsRequested, companion, [companion]() {
         auto* dialog = new SettingsDialog(nullptr);
-        dialog->setValues(companion->scale(), companion->animSpeed(), companion->inactivityTimeoutSec());
 
-		dialog->adjustSize();
-		QScreen* screen = QGuiApplication::screenAt(companion->geometry().center());
-		QRect screenGeometry = screen ? screen->availableGeometry() : QGuiApplication::primaryScreen()->availableGeometry();
-		dialog->move(screenGeometry.center() - dialog->rect().center());
+        QSettings settings;
+        QString rappelTime = settings.value("explorer/rappelTime", "08:00").toString();
+        dialog->setValues(companion->scale(), companion->animSpeed(), companion->inactivityTimeoutSec(), rappelTime);
 
-        QObject::connect(dialog, &SettingsDialog::settingsChanged, companion, [companion](double scale, int speed, int timeout) {
+        // Connexion pour ouvrir le calendrier depuis les paramètres
+        QObject::connect(dialog, &SettingsDialog::openCalendarRequested, companion, [=]() {
+            if (dialog) {
+                dialog->close();
+            }
+
+            auto* calendarWin = new CalendarWindow(nullptr);
+            calendarWin->setAttribute(Qt::WA_DeleteOnClose);
+
+            QScreen* screen = QGuiApplication::screenAt(calendarWin->geometry().center());
+            QRect screenGeometry = screen ? screen->availableGeometry() : QGuiApplication::primaryScreen()->availableGeometry();
+            calendarWin->move(screenGeometry.center() - calendarWin->rect().center());
+
+            calendarWin->show();
+            });
+
+        dialog->adjustSize();
+        QScreen* screen = QGuiApplication::screenAt(companion->geometry().center());
+        QRect screenGeometry = screen ? screen->availableGeometry() : QGuiApplication::primaryScreen()->availableGeometry();
+        dialog->move(screenGeometry.center() - dialog->rect().center());
+
+        QObject::connect(dialog, &SettingsDialog::settingsChanged, companion, [companion](double scale, int speed, int timeout, const QString& newRappelTime) {
             companion->applySettings(static_cast<float>(scale), speed, timeout);
-        });
+
+            QSettings s;
+            s.setValue("explorer/rappelTime", newRappelTime);
+            });
 
         dialog->exec();
     });

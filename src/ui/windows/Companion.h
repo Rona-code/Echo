@@ -7,10 +7,10 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 
-#include "../core/PetLoader.h"
-#include "../core/PhysicsController.h"
-#include "../core/BehaviorController.h"
 #include "ActionMenu.h"
+#include "../../core/managers/PetLoader.h"
+#include "../../core/physics/PhysicsController.h"
+#include "../../core/engine/BehaviorController.h"
 
 class ActionMenu;
 class AnimationEngine;

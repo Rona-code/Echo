@@ -1,6 +1,6 @@
 #include "AppInitializer.h"
 #include "security/LockManager.h"
-#include "../core/PetLoader.h"
+#include "../core/managers/PetLoader.h"
 
 #include <QSettings>
 

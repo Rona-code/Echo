@@ -35,7 +35,6 @@ void AnimationEngine::setState(AnimationState state)
 void AnimationEngine::start(int intervalMs)
 {
 	m_timer.start(intervalMs);
-	m_timer.start();
 }
 
 void AnimationEngine::stop()

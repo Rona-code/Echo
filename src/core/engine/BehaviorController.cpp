@@ -1,6 +1,6 @@
 #include "BehaviorController.h"
-#include "PhysicsController.h"
 #include "AnimationEngine.h"
+#include "../physics/PhysicsController.h"
 #include <QRandomGenerator>
 
 void BehaviorController::chooseNextState(const QRect& screenBounds, int companionWidth, AnimationEngine* animEngine) {

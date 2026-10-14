@@ -7,9 +7,9 @@
 #include <QDir>
 
 #include "commun/AppInitializer.h"
-#include "ui/Companion.h"
 #include "commun/TranslationManager.h"
-#include "core/PetLoader.h"
+#include "ui/windows/Companion.h"
+#include "core/managers/PetLoader.h"
 
 int main(int argc, char* argv[])
 {

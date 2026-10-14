@@ -1,6 +1,6 @@
 #include "PetCustomizer.h"
 #include "AddSprites.h"
-#include "../core/PetLoader.h"
+#include "../../core/managers/PetLoader.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

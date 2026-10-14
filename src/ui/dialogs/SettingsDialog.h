@@ -4,6 +4,7 @@
 #include <QSlider>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 #include <QVBoxLayout>
 
 class SettingsDialog : public QDialog
@@ -16,11 +17,13 @@ public:
 	double scaleFactor() const;
 	int animSpeedMs() const;
 	int idleTimeoutSec() const;
+	QString rappelTime() const;
 
-	void setValues(double scale, int animSpeed, int idleTimeout);
+	void setValues(double scale, int animSpeed, int idleTimeout, const QString& rappelTime);
 
 signals:
-	void settingsChanged(double scale, int animSpeed, int idleTimeout);
+	void settingsChanged(double scale, int animSpeed, int idleTimeout, const QString& rappelTime);
+	void openCalendarRequested();
 
 private:
 	void setupUI();
@@ -31,5 +34,7 @@ private:
 	QLabel* m_animSpeedValLabel{ nullptr };
 	QSlider* m_idleTimeoutSlider{ nullptr };
 	QLabel* m_idleTimeoutValLabel{ nullptr };
+	QLineEdit* m_rappelTimeInput{ nullptr };
 	QPushButton* m_btnSave{ nullptr };
+	QPushButton* m_btnOpenCalendar{ nullptr };
 };

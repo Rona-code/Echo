@@ -1,5 +1,5 @@
 #include "PhysicsController.h"
-#include "../ui/Companion.h"
+#include "../../ui/windows/Companion.h"
 #include <algorithm>
 #include <cmath>
 #include <QPoint>

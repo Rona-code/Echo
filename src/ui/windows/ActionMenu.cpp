@@ -1,8 +1,8 @@
 #include "ActionMenu.h"
-#include "../commun/TranslationManager.h"
-#include "PetCustomizer.h"
 #include "Companion.h"
-#include "../core/PetLoader.h"
+#include "../dialogs/PetCustomizer.h"
+#include "../../core/managers/PetLoader.h"
+#include "../../commun/TranslationManager.h"
 
 #include <QPainter>
 #include <QPainterPath>
