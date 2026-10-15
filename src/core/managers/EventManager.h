@@ -6,7 +6,6 @@
 struct EventData {
     QString content;
     bool isAnnual{ false };
-    bool isMonthly{ false };
     QString year;
 };
 

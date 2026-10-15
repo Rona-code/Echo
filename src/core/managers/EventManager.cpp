@@ -26,7 +26,6 @@ QMap<QString, EventData> EventManager::loadEvents()
         QJsonObject eventObj = it.value().toObject();
         EventData ev;
         ev.content = eventObj["content"].toString();
-        ev.isMonthly = eventObj["isMonthly"].toBool();
         ev.isAnnual = eventObj["isAnnual"].toBool();
         ev.year = eventObj["year"].toString();
         eventsMap[it.key()] = ev;
@@ -40,7 +39,6 @@ void EventManager::saveEvents(const QMap<QString, EventData>& eventsMap)
     for (auto it = eventsMap.begin(); it != eventsMap.end(); ++it) {
         QJsonObject eventObj;
         eventObj["content"] = it.value().content;
-        eventObj["isMonthly"] = it.value().isMonthly;
         eventObj["isAnnual"] = it.value().isAnnual;
         eventObj["year"] = it.value().year;
         obj[it.key()] = eventObj;
@@ -56,9 +54,7 @@ QString EventManager::getEventTextForDate(const QDate& targetDate)
 {
     QMap<QString, EventData> eventsMap = loadEvents();
 
-
-    QString targetDateIso = targetDate.toString("yyyy-MM-dd"); // "2026-10-14"
-
+    QString targetDateIso = targetDate.toString("yyyy-MM-dd");
     QString monthName = QLocale::system().monthName(targetDate.month(), QLocale::LongFormat).toLower();
     QString targetTextKey = QString("%1 %2").arg(targetDate.day()).arg(monthName);
 
@@ -66,11 +62,28 @@ QString EventManager::getEventTextForDate(const QDate& targetDate)
         QString key = it.key();
         const EventData& ev = it.value();
 
-        // On vérifie si la clé correspond soit au format ISO, soit au format textuel "14 octobre"
-        if (key == targetDateIso || key == targetTextKey ||
-            (ev.isAnnual && key.endsWith(targetDate.toString("MM-dd"))) ||
-            (ev.isMonthly && key.startsWith(QString::number(targetDate.day()) + " "))) {
+        if (key == targetDateIso || key == targetTextKey) {
             return ev.content;
+        }
+
+        // 2. Récurrence Annuelle : MÊME JOUR et MÊME MOIS (tous les ans)
+        if (ev.isAnnual) {
+            QDate originalDate = QDate::fromString(key, "yyyy-MM-dd");
+            if (originalDate.isValid()) {
+                if (originalDate.day() == targetDate.day() && originalDate.month() == targetDate.month()) {
+                    return ev.content;
+                }
+            }
+            else {
+                QStringList parts = key.split(' ');
+                if (parts.size() >= 2) {
+                    int origDay = parts[0].toInt();
+                    QString origMonth = parts[1];
+                    if (origDay == targetDate.day() && origMonth == monthName) {
+                        return ev.content;
+                    }
+                }
+            }
         }
     }
     return QString();

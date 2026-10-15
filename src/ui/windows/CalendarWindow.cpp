@@ -94,7 +94,7 @@ void CalendarWindow::displayDays()
 
         if (m_eventsMap.contains(dateKeyShort)) {
             EventData ev = m_eventsMap[dateKeyShort];
-            if (ev.isAnnual || ev.isMonthly || ev.year == QString::number(m_currentYear)) {
+            if (ev.isAnnual || ev.year == QString::number(m_currentYear)) {
                 dayWidget->setEventContent(ev.content, true);
             }
         }
@@ -146,7 +146,6 @@ void CalendarWindow::addRappel()
         ev.content = dialog.text();
         QString rec = dialog.recurrenceType();
         ev.isAnnual = (rec == "annual");
-        ev.isMonthly = (rec == "monthly");
         ev.year = QString::number(m_currentYear);
 
         m_eventsMap[m_activeDateKey] = ev;

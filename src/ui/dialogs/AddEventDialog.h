@@ -24,7 +24,6 @@ public:
         layout->addWidget(new QLabel(tr("Récurrence :"), this));
         m_recurrenceCombo = new QComboBox(this);
         m_recurrenceCombo->addItem(tr("Unique"), "none");
-        m_recurrenceCombo->addItem(tr("Mensuel (chaque mois ce jour-là)"), "monthly");
         m_recurrenceCombo->addItem(tr("Annuel (chaque année ce jour-là)"), "annual");
         layout->addWidget(m_recurrenceCombo);
 

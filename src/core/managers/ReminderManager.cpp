@@ -8,7 +8,7 @@ ReminderManager::ReminderManager(QObject* parent)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &ReminderManager::checkReminders);
-    m_timer->start(60000); // Vérification chaque minute
+    m_timer->start(10000); // Vérification toute les 10 secondes
 }
 
 void ReminderManager::checkReminders()
