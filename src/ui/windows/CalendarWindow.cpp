@@ -74,7 +74,9 @@ void CalendarWindow::displayDays()
     int dayOfWeek = firstDayOfMonth.dayOfWeek();
 
     QString monthName = QLocale::system().monthName(m_currentMonth, QLocale::LongFormat);
-    monthName[0] = monthName[0].toUpper();
+    if (!monthName.isEmpty()) {
+        monthName[0] = monthName[0].toUpper();
+    }
     m_dateTitle->setText(monthName + " " + QString::number(m_currentYear));
 
     int row = 0, col = dayOfWeek - 1;

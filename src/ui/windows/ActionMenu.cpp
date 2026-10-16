@@ -1,5 +1,6 @@
 #include "ActionMenu.h"
 #include "Companion.h"
+#include "AchievementWindow.h"
 #include "../dialogs/PetCustomizer.h"
 #include "../../core/managers/PetLoader.h"
 #include "../../commun/TranslationManager.h"
@@ -108,36 +109,29 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     mainLayout->addLayout(headerLayout);
 
     // --- CORPS (Boutons standard) ---
-    auto* btnGrid = new QHBoxLayout();
-    btnGrid->setSpacing(8);
-
-    m_btnLaunch = new QPushButton(tr("Lancer apps"), this);
-    m_btnLaunch->setCursor(Qt::PointingHandCursor);
-
-    m_btnClose = new QPushButton(tr("Quitter apps"), this);
-    m_btnClose->setCursor(Qt::PointingHandCursor);
-
-    btnGrid->addWidget(m_btnLaunch);
-    btnGrid->addWidget(m_btnClose);
-    mainLayout->addLayout(btnGrid);
-
     m_btnExplorer = new QPushButton(tr("Explorateur de fichiers"), this);
     m_btnExplorer->setCursor(Qt::PointingHandCursor);
     mainLayout->addWidget(m_btnExplorer);
 
-    // --- PIED DE PAGE (Quitter + Paramètres) ---
+    // --- PIED DE PAGE (Quitter + Tropées + Paramètres) ---
     auto* footerLayout = new QHBoxLayout();
     footerLayout->setSpacing(8);
 
     m_btnQuit = new QPushButton(tr("Quitter Echo"), this);
-    m_btnQuit->setObjectName("quitBtn"); // Attribue le style alerte pastel
+    m_btnQuit->setObjectName("quitBtn");
     m_btnQuit->setCursor(Qt::PointingHandCursor);
 
+    auto* btnAchievements = new QPushButton("🏆", this);
+    btnAchievements->setObjectName("iconBtn");
+    btnAchievements->setCursor(Qt::PointingHandCursor);
+    btnAchievements->setToolTip(tr("Trophées"));
+
     auto* btnSettings = new QPushButton("⚙️", this);
-    btnSettings->setObjectName("iconBtn"); // Attribue le style rond 26x26px
+    btnSettings->setObjectName("iconBtn");
     btnSettings->setCursor(Qt::PointingHandCursor);
 
     footerLayout->addWidget(m_btnQuit, 1);
+    footerLayout->addWidget(btnAchievements);
     footerLayout->addWidget(btnSettings);
 
     mainLayout->addLayout(footerLayout);
@@ -145,6 +139,13 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     // --- CONNEXIONS ---
     connect(toggleWalk, &QCheckBox::toggled, this, [this](bool checked) {
         emit walkModeToggled(checked);
+        });
+
+    connect(m_langComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+        if (!m_isInitializing) {
+            QString langCode = m_langComboBox->itemData(index).toString();
+            emit languageChangedRequested(langCode);
+        }
         });
 
     connect(m_btnPet, &QPushButton::clicked, this, [this]() {
@@ -158,8 +159,13 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
         this->deleteLater();
         });
 
-    connect(m_btnLaunch, &QPushButton::clicked, this, [this]() { emit launchAppsRequested(); close(); });
-    connect(m_btnClose, &QPushButton::clicked, this, [this]() { emit closeAppsRequested(); close(); });
+    connect(btnAchievements, &QPushButton::clicked, [this]() {
+        close();
+        auto* achWin = new AchievementsWindow();
+        achWin->setAttribute(Qt::WA_DeleteOnClose);
+        achWin->show();
+        });
+
     connect(m_btnExplorer, &QPushButton::clicked, this, [this]() { emit openExplorerRequested(); close(); });
     connect(btnSettings, &QPushButton::clicked, this, [this]() { emit settingsRequested(); close(); });
     connect(m_btnQuit, &QPushButton::clicked, this, [this]() { hide(); emit quitRequested(); });
@@ -186,8 +192,6 @@ void ActionMenu::updateComboToCurrentLanguage()
 
 void ActionMenu::retranslateUi()
 {
-    m_btnLaunch->setText(tr("Lancer apps"));
-    m_btnClose->setText(tr("Quitter apps"));
     m_btnExplorer->setText(tr("Explorateur de fichiers"));
     m_btnQuit->setText(tr("Quitter Echo"));
 

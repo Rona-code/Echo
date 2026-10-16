@@ -45,15 +45,10 @@ void DayWidget::setEventContent(const QString& content, bool hasEvent)
 void DayWidget::contextMenuEvent(QContextMenuEvent* event)
 {
     emit rightClicked(this, event->globalPos());
+    event->accept();
 }
 
 void DayWidget::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::RightButton) {
-        emit rightClicked(this, event->globalPosition().toPoint());
-        event->accept();
-    }
-    else {
-        QWidget::mousePressEvent(event);
-    }
+    QWidget::mousePressEvent(event);
 }

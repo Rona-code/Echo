@@ -33,14 +33,6 @@ ActionMenu* CompanionMenuManager::showContextMenu(Companion* companion, const QP
         TranslationManager::instance().setLanguage(langCode);
     });
 
-    QObject::connect(menu, &ActionMenu::launchAppsRequested, companion, []() {
-        // Logique pour lancer la liste des apps
-    });
-
-    QObject::connect(menu, &ActionMenu::closeAppsRequested, companion, []() {
-        // Logique pour fermer les apps
-    });
-
     QObject::connect(menu, &ActionMenu::openExplorerRequested, companion, []() {
 		auto* explorer = new ExplorerWindow(nullptr);
 		explorer->setAttribute(Qt::WA_DeleteOnClose);

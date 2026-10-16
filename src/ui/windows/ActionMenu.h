@@ -18,8 +18,6 @@ public:
 	void popupAt(const QPoint& globalPos, const QRect& companionGeometry);
 
 signals:
-	void launchAppsRequested();
-	void closeAppsRequested();
 	void openExplorerRequested();
 	void settingsRequested();
 	void languageChangedRequested(const QString& langCode);

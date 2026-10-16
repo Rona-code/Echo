@@ -7,6 +7,11 @@
 
 QString EventManager::getAppdataPath()
 {
+    QString baseDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    if (baseDir.isEmpty()) {
+        baseDir = QDir::homePath() + "/.local/share";
+    }
+
     QString dirPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/EchoData";
     QDir().mkpath(dirPath);
     return dirPath + "/calendar_events.json";
