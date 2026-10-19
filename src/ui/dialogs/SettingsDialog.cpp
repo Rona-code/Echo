@@ -1,4 +1,5 @@
 #include "SettingsDialog.h"
+#include "../../core/managers/AchievementManager.h"
 #include <QHBoxLayout>
 #include <QGroupBox>
 
@@ -111,11 +112,20 @@ void SettingsDialog::setupUI() {
         });
 
     connect(m_btnSave, &QPushButton::clicked, this, [this]() {
+        double currentScale = scaleFactor();
+        int currentAnimSpeed = animSpeedMs();
+        int currentTimeout = idleTimeoutSec();
+
+        AchievementManager::instance().notifyScaleChanged(currentScale);
+        AchievementManager::instance().notifyAnimSpeedChanged(currentAnimSpeed);
+        AchievementManager::instance().notifyTimeoutChanged(currentTimeout);
+
         emit settingsChanged(scaleFactor(), animSpeedMs(), idleTimeoutSec(), rappelTime());
         accept();
         });
 
     connect(m_btnOpenCalendar, &QPushButton::clicked, this, [this]() {
+        AchievementManager::instance().notifyCalendarEventAdded();
         emit openCalendarRequested();
         });
 }

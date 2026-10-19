@@ -16,5 +16,6 @@ public:
 
 private:
 	float m_verticalVelocity = 0.0f;
+	float m_maxSpeedReached = 0.0f;
 	static constexpr float GRAVITY_ACCELERATION = 1.2f;
 };

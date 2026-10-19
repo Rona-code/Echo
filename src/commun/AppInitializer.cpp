@@ -2,8 +2,8 @@
 #include "security/LockManager.h"
 #include "../core/managers/AchievementManager.h"
 #include "../core/managers/PetLoader.h"
-
 #include <QSettings>
+
 
 bool AppInitializer::init()
 {
@@ -17,5 +17,6 @@ bool AppInitializer::init()
 QString AppInitializer::getSavedPetId()
 {
 	QSettings settings;
+	settings.sync();
 	return settings.value("pet/selectedId", PetLoader::DEFAULT_FOX_ID).toString();
 }

@@ -1,6 +1,7 @@
 #include "PetCustomizer.h"
 #include "AddSprites.h"
 #include "../../core/managers/PetLoader.h"
+#include "../../core/managers/AchievementManager.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -72,6 +73,9 @@ void PetCustomizer::setupUI()
     connect(m_btnSelect, &QPushButton::clicked, this, [this]() {
         if (auto* item = m_petListWidget->currentItem()) {
             QString petId = item->data(Qt::UserRole).toString();
+
+            AchievementManager::instance().notifyCompanionChanged();
+
             emit petSelected(petId);
             accept();
         }

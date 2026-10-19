@@ -43,10 +43,10 @@ protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 private:
     void resetInactivityTimer();
-    void updateAnimationState();
     void triggerBounce();
 
     QPixmap m_pixmap;
@@ -69,5 +69,4 @@ private:
     ActionMenu* m_activeMenu{ nullptr };
     PhysicsController m_physics;
     BehaviorController m_behavior;
-	std::unique_ptr<PhysicsController> m_physicsController;
 };

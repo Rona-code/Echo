@@ -1,5 +1,6 @@
 #include "PhysicsController.h"
 #include "../../ui/windows/Companion.h"
+#include "../managers/AchievementManager.h"
 #include <algorithm>
 #include <cmath>
 #include <QPoint>
@@ -63,11 +64,20 @@ void PhysicsController::updatePhysics(Companion* companion, const QList<QRect>& 
     if (currentPos.y() < targetGroundY)
     {
         m_verticalVelocity += GRAVITY_ACCELERATION;
+
+        if (m_verticalVelocity > m_maxSpeedReached) {
+            m_maxSpeedReached = m_verticalVelocity;
+        }
+
         int nextY = currentPos.y() + static_cast<int>(m_verticalVelocity);
 
         if (nextY >= targetGroundY) {
             nextY = targetGroundY;
+
+            AchievementManager::instance().checkAndSaveMaxSpeed(m_maxSpeedReached);
+
             m_verticalVelocity = 0.0f;
+            m_maxSpeedReached = 0.0f;
             companion->setGrounded(true);
         }
         else {

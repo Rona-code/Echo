@@ -1,9 +1,11 @@
 #include "Companion.h"
 #include "ActionMenu.h"
 #include "CompanionMenuManager.h"
+#include "ConfettiOverlay.h"
 #include "../../core/engine/AnimationEngine.h"
 #include "../../core/physics/WindowDetector.h"
 #include "../../core/managers/ReminderManager.h"
+#include "../../core/managers/AchievementManager.h"
 
 #include <QPainter>
 #include <QSettings>
@@ -11,11 +13,13 @@
 #include <QGuiApplication>
 #include <QRandomGenerator>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 Companion::Companion(QWidget* parent) : QWidget(parent) {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow | Qt::BypassWindowManagerHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setFixedSize(64, 64);
+    setFocusPolicy(Qt::StrongFocus);
 
     m_animationEngine = new AnimationEngine(this);
     connect(m_animationEngine, &AnimationEngine::frameChanged, this, &Companion::setSprite);
@@ -39,7 +43,12 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
         m_behavior.processBehaviorTick(
             pos(), width(), height(), screenBounds,
             m_isWalkModeEnabled, m_moveSpeed, m_physics, m_animationEngine,
-            [this](const QPoint& p) { move(p); },
+            [this](const QPoint& p) {
+                if (pos() != p) {
+                    move(p);
+                    AchievementManager::instance().notifyCompanionMoved();
+                }
+            },
             [this]() { resetInactivityTimer(); }
         );
         });
@@ -146,6 +155,9 @@ void Companion::mousePressEvent(QMouseEvent* event) {
     resetInactivityTimer();
     if (event->button() == Qt::LeftButton) {
         triggerBounce();
+
+        AchievementManager::instance().notifyCompanionClicked();
+
         m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
         event->accept();
     }
@@ -188,4 +200,33 @@ bool Companion::isDragging() const {
 
 void Companion::clearActiveMenu() {
     m_activeMenu = nullptr;
+}
+
+void Companion::keyPressEvent(QKeyEvent* event) {
+    static const QList<int> konamiCode = {
+        Qt::Key_Up, Qt::Key_Up,
+        Qt::Key_Down, Qt::Key_Down,
+        Qt::Key_Left, Qt::Key_Right,
+        Qt::Key_Left, Qt::Key_Right,
+        Qt::Key_B, Qt::Key_A
+    };
+
+    static int currentIndex = 0;
+
+    if (event->key() == konamiCode[currentIndex]) {
+        currentIndex++;
+        if (currentIndex == konamiCode.size()) {
+            // --- SUCCÈS DÉBLOQUÉ & PLUIE DE CONFETTIS ---
+            AchievementManager::instance().unlock("konami_master");
+            new ConfettiOverlay();
+            triggerBounce();
+
+            currentIndex = 0;
+        }
+    }
+    else {
+        currentIndex = (event->key() == konamiCode[0]) ? 1 : 0;
+    }
+
+    QWidget::keyPressEvent(event);
 }

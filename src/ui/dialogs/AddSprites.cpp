@@ -1,4 +1,5 @@
 #include "AddSprites.h"
+#include "../../core/managers/AchievementManager.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -151,6 +152,9 @@ void AddSprites::savePet()
     if (jsonFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         jsonFile.write(QJsonDocument(petJson).toJson(QJsonDocument::Indented));
         jsonFile.close();
+
+        AchievementManager::instance().notifyCompanionAdded();
+
         accept(); // Fermeture et confirmation
     }
     else {
