@@ -35,6 +35,7 @@ private:
 	void loadStyleSheet();
 	void retranslateUi();
 	void updateComboToCurrentLanguage();
+	void showAboutDialog();
 
 	QPushButton* m_btnPet{ nullptr };
 	QPushButton* m_btnWalk{ nullptr };

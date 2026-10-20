@@ -1,6 +1,7 @@
 #include "WindowDetector.h"
 #include <QGuiApplication>
 
+#include <QScreen>
 #ifdef Q_OS_WIN
 #include <windows.h>
 #include <dwmapi.h>
@@ -42,6 +43,25 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
 #elif defined(Q_OS_LINUX)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <unistd.h>
+#endif
+
+#ifdef Q_OS_LINUX
+namespace {
+    bool hasAtomInList(Display* d, Window w, Atom prop, Atom target) {
+        Atom type; int fmt; unsigned long n, after; unsigned char* data = nullptr;
+        bool found = false;
+        if (XGetWindowProperty(d, w, prop, 0, 1024, False, XA_ATOM,
+            &type, &fmt, &n, &after, &data) == Success && data) {
+            Atom* atoms = reinterpret_cast<Atom*>(data);
+            for (unsigned long i = 0; i < n; ++i)
+                if (atoms[i] == target) { found = true; break; }
+            XFree(data);
+        }
+        return found;
+    }
+}
 #endif
 
 QList<QRect> WindowDetector::getAllVisibleWindowGeometries() {
@@ -52,33 +72,101 @@ QList<QRect> WindowDetector::getAllVisibleWindowGeometries() {
 
 #elif defined(Q_OS_LINUX)
     Display* display = XOpenDisplay(nullptr);
-    if (display) {
-        Window root = DefaultRootWindow(display);
-        Window parent;
-        Window* children = nullptr;
-        unsigned int num_children = 0;
+    if (!display) return windows;
 
-        if (XQueryTree(display, root, &root, &parent, &children, &num_children)) {
-            for (unsigned int i = 0; i < num_children; ++i) {
-                XWindowAttributes attr;
-                if (XGetWindowAttributes(display, children[i], &attr)) {
-                    if (attr.map_state == IsViewable) {
-                        int x, y;
-                        Window child;
-                        if (XTranslateCoordinates(display, children[i], root, 0, 0, &x, &y, &child)) {
-                            if (attr.width > 100 && attr.height > 100) {
-                                windows.append(QRect(x, y, attr.width, attr.height));
-                            }
-                        }
-                    }
+    Window root = DefaultRootWindow(display);
+    Atom clientList = XInternAtom(display, "_NET_CLIENT_LIST", False);
+    Atom pidAtom = XInternAtom(display, "_NET_WM_PID", False);
+    Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", False);
+    Atom hiddenAtom = XInternAtom(display, "_NET_WM_STATE_HIDDEN", False);
+    Atom typeAtom = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+    Atom dockAtom = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DOCK", False);
+    Atom desktopAtom = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DESKTOP", False);
+    Atom extentsAtom = XInternAtom(display, "_NET_FRAME_EXTENTS", False);
+    Atom curDeskAtom = XInternAtom(display, "_NET_CURRENT_DESKTOP", False);
+    Atom winDeskAtom = XInternAtom(display, "_NET_WM_DESKTOP", False);
+
+    const unsigned long currentPid = static_cast<unsigned long>(getpid());
+    const qreal dpr = qGuiApp && qGuiApp->primaryScreen()
+        ? qGuiApp->primaryScreen()->devicePixelRatio() : 1.0;
+
+    long currentDesktop = -1;
+    {
+        Atom t; int f; unsigned long n, a; unsigned char* d = nullptr;
+        if (XGetWindowProperty(display, root, curDeskAtom, 0, 1, False, XA_CARDINAL,
+            &t, &f, &n, &a, &d) == Success && d) {
+            if (n > 0) currentDesktop = *reinterpret_cast<long*>(d);
+            XFree(d);
+        }
+    }
+
+    Atom type; int format; unsigned long nItems = 0, bytesAfter = 0;
+    unsigned char* prop = nullptr;
+
+    if (XGetWindowProperty(display, root, clientList, 0, 4096, False, XA_WINDOW,
+        &type, &format, &nItems, &bytesAfter, &prop) == Success && prop) {
+        Window* clients = reinterpret_cast<Window*>(prop);
+
+        for (unsigned long i = 0; i < nItems; ++i) {
+            Window w = clients[i];
+
+            {
+                Atom t; int f; unsigned long n, a; unsigned char* d = nullptr;
+                if (XGetWindowProperty(display, w, pidAtom, 0, 1, False, XA_CARDINAL,
+                    &t, &f, &n, &a, &d) == Success && d) {
+                    unsigned long winPid = (n > 0) ? *reinterpret_cast<unsigned long*>(d) : 0;
+                    XFree(d);
+                    if (winPid == currentPid) continue;
                 }
             }
-            if (children) {
-                XFree(children);
+
+            if (hasAtomInList(display, w, stateAtom, hiddenAtom)) continue;
+
+            if (hasAtomInList(display, w, typeAtom, dockAtom) ||
+                hasAtomInList(display, w, typeAtom, desktopAtom)) continue;
+
+            {
+                Atom t; int f; unsigned long n, a; unsigned char* d = nullptr;
+                if (XGetWindowProperty(display, w, winDeskAtom, 0, 1, False, XA_CARDINAL,
+                    &t, &f, &n, &a, &d) == Success && d) {
+                    long desk = (n > 0) ? *reinterpret_cast<long*>(d) : -1;
+                    XFree(d);
+                    if (desk != static_cast<long>(0xFFFFFFFFul) && currentDesktop >= 0 && desk != currentDesktop)
+                        continue;
+                }
             }
+
+            XWindowAttributes attr;
+            if (!XGetWindowAttributes(display, w, &attr) || attr.map_state != IsViewable) continue;
+
+            int x, y; Window child;
+            if (!XTranslateCoordinates(display, w, root, 0, 0, &x, &y, &child)) continue;
+
+            long left = 0, right = 0, top = 0, bottom = 0;
+            {
+                Atom t; int f; unsigned long n, a; unsigned char* d = nullptr;
+                if (XGetWindowProperty(display, w, extentsAtom, 0, 4, False, XA_CARDINAL,
+                    &t, &f, &n, &a, &d) == Success && d) {
+                    if (n == 4) {
+                        long* e = reinterpret_cast<long*>(d);
+                        left = e[0]; right = e[1]; top = e[2]; bottom = e[3];
+                    }
+                    XFree(d);
+                }
+            }
+
+            QRect r(qRound((x - left) / dpr),
+                qRound((y - top) / dpr),
+                qRound((attr.width + left + right) / dpr),
+                qRound((attr.height + top + bottom) / dpr));
+
+            if (r.width() > 100 && r.height() > 100)
+                windows.append(r);
         }
-        XCloseDisplay(display);
+        XFree(prop);
     }
+
+    XCloseDisplay(display);
 #endif
 
     return windows;

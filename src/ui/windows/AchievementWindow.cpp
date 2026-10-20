@@ -52,13 +52,19 @@ void AchievementsWindow::loadAchievements() {
     m_listWidget->clear();
     auto achievements = AchievementManager::instance().getAllAchievements();
 
+    QIcon lockedIcon = style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    QIcon unlockedIcon = style()->standardIcon(QStyle::SP_DialogApplyButton);
+
     for (const auto& ach : achievements) {
-        QString status = ach.unlocked ? "✅ [Débloqué]" : "🔒 [Verrouillé]";
+        QString status = ach.unlocked ? tr("[Débloqué]") : tr("[Verrouillé]");
         QString text = QString("%1  %2\n   %3").arg(status, ach.title, ach.description);
 
         QListWidgetItem* item = new QListWidgetItem(text, m_listWidget);
+
+        item->setIcon(ach.unlocked ? unlockedIcon : lockedIcon);
+
         if (!ach.unlocked) {
-            item->setForeground(QColor("#888888")); // Griser les trophées verrouillés
+            item->setForeground(QColor("#888888"));
         }
         m_listWidget->addItem(item);
     }

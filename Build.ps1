@@ -246,7 +246,7 @@ mv $ProjectName-*.AppImage $ProjectName.AppImage
 switch ($Target) {
 	"all_static" { Build-Windows-Static; Build-Linux }
 	"all_secure_static" { Build-Windows-Static-OpenSSL; Build-Linux-OpenSSL }
-	#"all_dynamic" { Build-Windows-Dynamic; Build-InnoSetup; Build-Linux }
-	"all_dynamic" { Build-Linux }
+	"all_dynamic" { Build-Windows-Dynamic; Build-InnoSetup; Build-Linux }
+	#"all_dynamic" { Build-Linux }
 	"all_secure_dynamic" { Build-Windows-Dynamic-OpenSSL; Build-InnoSetup; Build-Linux-OpenSSL }
 }

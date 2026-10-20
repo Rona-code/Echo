@@ -17,6 +17,7 @@
 #include <QPointer>
 #include <QCheckBox>
 #include <QScreen>
+#include <QMessageBox>
 #include <QGuiApplication>
 
 class ToggleSwitch : public QCheckBox {
@@ -85,7 +86,7 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     m_btnPet = new QPushButton(this);
     m_btnPet->setObjectName("petBtn");
     m_btnPet->setCursor(Qt::PointingHandCursor);
-    m_btnPet->setFixedSize(32, 32);
+    m_btnPet->setFixedSize(64, 32);
     m_btnPet->setFlat(true);
 
     PetAnimationData defaultPet = PetLoader::loadPet(PetLoader::DEFAULT_FOX_ID);
@@ -101,6 +102,7 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     auto* toggleWalk = new ToggleSwitch(this);
     toggleWalk->setChecked(isWalkModeEnabled);
 
+    //headerLayout->addWidget(btnAbout);
     headerLayout->addWidget(m_langComboBox);
     headerLayout->addWidget(m_btnPet);
     headerLayout->addStretch();
@@ -112,14 +114,15 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     m_btnExplorer = new QPushButton(tr("Explorateur de fichiers"), this);
     m_btnExplorer->setCursor(Qt::PointingHandCursor);
     mainLayout->addWidget(m_btnExplorer);
+    
+    m_btnQuit = new QPushButton(tr("Quitter Echo"), this);
+    m_btnQuit->setObjectName("quitBtn");
+    m_btnQuit->setCursor(Qt::PointingHandCursor);
+    mainLayout->addWidget(m_btnQuit, 1);
 
     // --- PIED DE PAGE (Quitter + Tropées + Paramètres) ---
     auto* footerLayout = new QHBoxLayout();
     footerLayout->setSpacing(8);
-
-    m_btnQuit = new QPushButton(tr("Quitter Echo"), this);
-    m_btnQuit->setObjectName("quitBtn");
-    m_btnQuit->setCursor(Qt::PointingHandCursor);
 
     auto* btnAchievements = new QPushButton("🏆", this);
     btnAchievements->setObjectName("iconBtn");
@@ -130,9 +133,15 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
     btnSettings->setObjectName("iconBtn");
     btnSettings->setCursor(Qt::PointingHandCursor);
 
-    footerLayout->addWidget(m_btnQuit, 1);
+    auto* btnAbout = new QPushButton("?", this);
+    btnAbout->setObjectName("iconBtn");
+    btnAbout->setCursor(Qt::PointingHandCursor);
+    btnAbout->setFixedSize(32, 32);
+    btnAbout->setToolTip(tr("À propos"));
+
     footerLayout->addWidget(btnAchievements);
     footerLayout->addWidget(btnSettings);
+    footerLayout->addWidget(btnAbout);
 
     mainLayout->addLayout(footerLayout);
 
@@ -164,6 +173,12 @@ void ActionMenu::setupUI(bool isWalkModeEnabled)
         auto* achWin = new AchievementsWindow();
         achWin->setAttribute(Qt::WA_DeleteOnClose);
         achWin->show();
+        });
+
+    connect(btnAbout, &QPushButton::clicked, this, [this]() {
+        close();
+        QMessageBox::about(this, tr("À propos d'Echo"),
+            QString(tr("<b>Echo</b><br>Version : %1").arg(APP_VERSION)));
         });
 
     connect(m_btnExplorer, &QPushButton::clicked, this, [this]() { emit openExplorerRequested(); close(); });

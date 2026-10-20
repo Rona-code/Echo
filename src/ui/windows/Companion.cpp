@@ -153,6 +153,10 @@ void Companion::paintEvent(QPaintEvent*) {
 
 void Companion::mousePressEvent(QMouseEvent* event) {
     resetInactivityTimer();
+
+    activateWindow();
+    setFocus();
+
     if (event->button() == Qt::LeftButton) {
         triggerBounce();
 
