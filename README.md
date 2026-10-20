@@ -11,7 +11,7 @@ A small character lives on your screen, walks around, falls asleep when you're i
 - **Desktop companion** that stays on top of your windows
 - **Physics & behavior**
   - Walks around the screen
-  - Collides with other windows (only Windows or Linux X11)
+  - Collides with other windows (Windows & Linux X11)
   - Falls asleep after inactivity
   - Bounces when clicked or when a reminder triggers
 - **Custom pets**
@@ -19,7 +19,7 @@ A small character lives on your screen, walks around, falls asleep when you're i
   - Add your own companions directly from the application
 - **Achievements system**
   - Multiple unlockable achievements
-  - Enjoy to discover
+  - Fun to discover
 - **Calendar & reminders**
   - Add events
   - Your companion notifies you
@@ -61,8 +61,9 @@ Just provide the required animation frames (idle, walk, sleep) through the built
 ### Build
 
 ```bash
-# Using the provided script (recommended) to be modified for your environment.
-./Build.ps1
+# Recommended on Windows (PowerShell)
+# You may need to adapt the script to your environment
+.\Build.ps1
 
 # Or manually
 mkdir build && cd build
@@ -74,3 +75,7 @@ cmake --build .
 ### Author
 
 Made with care by Rona.
+
+## License
+
+[MIT](LICENSE.txt)
