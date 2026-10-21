@@ -1,6 +1,7 @@
 #pragma once
 #include <QRect>
 #include <QPoint>
+#include <functional>
 
 enum class CompanionState { Idle, Walking, Sleeping };
 
@@ -28,7 +29,7 @@ public:
     );
 
 private:
-    void chooseNextState(const QRect& screenBounds, int companionWidth, AnimationEngine* animEngine);
+    void chooseNextState(const QRect& screenBounds, int companionWidth, int currentX, float moveSpeed, AnimationEngine* animEngine);
 
     CompanionState m_state{ CompanionState::Idle };
     float m_targetX{ 0.0f };

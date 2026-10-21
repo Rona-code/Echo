@@ -4,172 +4,172 @@
 <context>
     <name>AchievementManager</name>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="31"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="32"/>
         <source>Premier pas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="32"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="33"/>
         <source>Là où tout commence... Éveillez votre compagnon.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="35"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="36"/>
         <source>Polyglotte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="36"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="37"/>
         <source>Parlez une langue que les murs ne comprennent pas.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="39"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="40"/>
         <source>Démon de la vitesse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="40"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="41"/>
         <source>Frôlez la vitesse de la lumière (ou du moins, tombez très vite)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="43"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="44"/>
         <source>Oiseau de nuit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="44"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="45"/>
         <source>Actif quand le monde entier est plongé dans le noir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="47"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="48"/>
         <source>Grand Voyageur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="48"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="49"/>
         <source>Arpentez l&apos;écran de long en large, encore et encore.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="51"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="52"/>
         <source>Fidèle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="52"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="53"/>
         <source>Le temps s&apos;efface quand on est bien accompagné.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="55"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="56"/>
         <source>Nouvelle recrue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="56"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="57"/>
         <source>Accueillez une âme supplémentaire sous votre toit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="59"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="60"/>
         <source>Métamorphe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="60"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="61"/>
         <source>Changez de visage comme de chemise.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="63"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="64"/>
         <source>Chatouilleux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="64"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="65"/>
         <source>À force de le pousser à bout, il finira par réagir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="67"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="68"/>
         <source>Minuscule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="68"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="69"/>
         <source>Réduisez votre compagnon à sa plus simple expression.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="71"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="72"/>
         <source>Titan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="72"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="73"/>
         <source>Donnez à votre compagnon des proportions gigantesques.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="75"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="76"/>
         <source>Hyperactif</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="76"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="77"/>
         <source>Poussez la vitesse d&apos;animation au maximum de sa folie.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="79"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="80"/>
         <source>Au ralenti</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="80"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="81"/>
         <source>Profitez de chaque image dans une lenteur absolue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="83"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="84"/>
         <source>Marmotte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="84"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="85"/>
         <source>Réglez le délai d&apos;inactivité au plus court.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="87"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="88"/>
         <source>Insomniaque</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="88"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="89"/>
         <source>Laissez-lui tout le temps du monde avant de piquer un somme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="91"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="92"/>
         <source>Organisé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="92"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="93"/>
         <source>Planifiez votre avenir en ajoutant un événement au calendrier.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="95"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="96"/>
         <source>???</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core/managers/AchievementManager.cpp" line="96"/>
+        <location filename="../../src/core/managers/AchievementManager.cpp" line="97"/>
         <source>Vous avez percé le secret des développeurs !</source>
         <translation type="unfinished"></translation>
     </message>
@@ -438,7 +438,7 @@
 <context>
     <name>Companion</name>
     <message>
-        <location filename="../../src/ui/windows/Companion.cpp" line="74"/>
+        <location filename="../../src/ui/windows/Companion.cpp" line="88"/>
         <source>Hé ! Petit rappel pour aujourd&apos;hui :
 
 &quot;%1&quot;
@@ -447,7 +447,7 @@ Ne l&apos;oublie pas !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ui/windows/Companion.cpp" line="75"/>
+        <location filename="../../src/ui/windows/Companion.cpp" line="89"/>
         <source>Alerte de ton Compagnon</source>
         <translation type="unfinished"></translation>
     </message>

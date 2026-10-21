@@ -14,6 +14,7 @@
 #include <QRandomGenerator>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <algorithm>
 
 Companion::Companion(QWidget* parent) : QWidget(parent) {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow | Qt::BypassWindowManagerHint);
@@ -27,8 +28,14 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
     m_inactivityTimer = new QTimer(this);
     m_inactivityTimer->setSingleShot(true);
     connect(m_inactivityTimer, &QTimer::timeout, this, [this]() {
+
+        if (m_isWalkModeEnabled && m_behavior.state() == CompanionState::Walking) {
+            m_inactivityTimer->start();
+            return;
+        }
+
         m_behavior.setState(CompanionState::Sleeping);
-        m_behavior.setTicks(QRandomGenerator::global()->bounded(200, 6001));
+        m_behavior.setTicks(QRandomGenerator::global()->bounded(200, 600));
         if (m_animationEngine) m_animationEngine->setState(AnimationEngine::AnimationState::Sleeping);
         });
 
@@ -40,17 +47,24 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
 		QList<QRect> windows = WindowDetector::getAllVisibleWindowGeometries();
 		m_physics.updatePhysics(this, windows, screenBounds);
 
-        m_behavior.processBehaviorTick(
-            pos(), width(), height(), screenBounds,
-            m_isWalkModeEnabled, m_moveSpeed, m_physics, m_animationEngine,
-            [this](const QPoint& p) {
-                if (pos() != p) {
-                    move(p);
-                    AchievementManager::instance().notifyCompanionMoved();
-                }
-            },
-            [this]() { resetInactivityTimer(); }
-        );
+        if (!m_isDragging) {
+            m_behavior.processBehaviorTick(
+                pos(), width(), height(), screenBounds,
+                m_isWalkModeEnabled, m_moveSpeed, m_physics, m_animationEngine,
+                [&](const QPoint& p) {
+
+                    int clampedX = std::clamp(p.x(), screenBounds.left(), screenBounds.right() - width());
+                    int clampedY = std::clamp(p.y(), screenBounds.top(), screenBounds.bottom() - height());
+                    QPoint clampedPoint(clampedX, clampedY);
+
+                    if (pos() != clampedPoint) {
+                        move(clampedPoint);
+                        AchievementManager::instance().notifyCompanionMoved();
+                    }
+                },
+                [this]() { resetInactivityTimer(); }
+            );
+        }
         });
 
     m_bounceAnim = new QPropertyAnimation(this, "pos", this);
@@ -117,22 +131,32 @@ void Companion::setSprite(const QString& imagePath) {
 
     int newW = static_cast<int>(m_pixmap.width() * m_scale);
     int newH = static_cast<int>(m_pixmap.height() * m_scale);
-    if (newW > 0 && newH > 0) { setFixedSize(newW, newH); update(); }
+    
+    if (width() != newW || height() != newH) {
+        setFixedSize(newW, newH);
+    }
+    update();
 }
 
 void Companion::resetInactivityTimer() {
     m_inactivityTimer->start();
-    if (m_behavior.state() == CompanionState::Sleeping) m_behavior.setState(CompanionState::Idle);
+    if (m_behavior.state() == CompanionState::Sleeping) {
+        m_behavior.setState(CompanionState::Idle);
+        m_behavior.setTicks(0);
+    }
     if (m_animationEngine) {
-        auto state = m_isWalkModeEnabled ? AnimationEngine::AnimationState::Walking : AnimationEngine::AnimationState::Idle;
+        auto state = (m_behavior.state() == CompanionState::Walking)
+            ? AnimationEngine::AnimationState::Walking
+            : AnimationEngine::AnimationState::Idle;
         m_animationEngine->setState(state);
     }
 }
 
 void Companion::setWalkModeEnabled(bool enabled) {
     m_isWalkModeEnabled = enabled;
-    resetInactivityTimer();
     if (!enabled) m_behavior.setState(CompanionState::Idle);
+    m_behavior.setTicks(0);
+    resetInactivityTimer();
 }
 
 void Companion::triggerBounce() {
@@ -158,10 +182,10 @@ void Companion::mousePressEvent(QMouseEvent* event) {
     setFocus();
 
     if (event->button() == Qt::LeftButton) {
-        triggerBounce();
-
+        //triggerBounce();
+        m_isDragging = true;
+        m_bounceAnim->stop();
         AchievementManager::instance().notifyCompanionClicked();
-
         m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
         event->accept();
     }
@@ -188,6 +212,16 @@ void Companion::mouseMoveEvent(QMouseEvent* event) {
         move(event->globalPosition().toPoint() - m_dragPosition);
         event->accept();
     }
+}
+
+void Companion::mouseReleaseEvent(QMouseEvent* event) {
+    triggerBounce();
+    if (event->button() == Qt::LeftButton) {
+        m_isDragging = false;
+        event->accept();
+        return;
+    }
+    QWidget::mouseReleaseEvent(event);
 }
 
 void Companion::setGrounded(bool grounded) {

@@ -2,8 +2,10 @@
 #include "AnimationEngine.h"
 #include "../physics/PhysicsController.h"
 #include <QRandomGenerator>
+#include <cstdlib>
+#include <algorithm>
 
-void BehaviorController::chooseNextState(const QRect& screenBounds, int companionWidth, AnimationEngine* animEngine) {
+void BehaviorController::chooseNextState(const QRect& screenBounds, int companionWidth, int currentX, float moveSpeed, AnimationEngine* animEngine) {
     int roll = QRandomGenerator::global()->bounded(100);
 
     if (roll < 60) {
@@ -12,10 +14,22 @@ void BehaviorController::chooseNextState(const QRect& screenBounds, int companio
     }
     else {
         m_state = CompanionState::Walking;
-        int minX = screenBounds.left();
-        int maxX = std::max(minX, screenBounds.right() - companionWidth);
-        m_targetX = static_cast<float>(QRandomGenerator::global()->bounded(minX, maxX));
-        m_stateTicks = 300;
+
+        const int minX = screenBounds.left();
+        const int maxX = std::max(minX + 1, screenBounds.right() - companionWidth);
+        const int minDistance = 250;
+
+        int target = currentX;
+        for (int i = 0; i < 10 && std::abs(target - currentX) < minDistance; ++i) {
+            target = QRandomGenerator::global()->bounded(minX, maxX);
+        }
+
+        if (std::abs(target - currentX) < minDistance) {
+            target = (currentX - minX > maxX - currentX) ? minX : maxX;
+        }
+
+        m_targetX = static_cast<float>(target);
+        m_stateTicks = static_cast<int>(std::abs(target - currentX) / std::max(moveSpeed, 0.1f)) + 40;
     }
 
     if (animEngine) {
@@ -41,7 +55,7 @@ void BehaviorController::processBehaviorTick(
     if (m_state == CompanionState::Sleeping) {
         m_stateTicks--;
         if (m_stateTicks <= 0) {
-            chooseNextState(screenBounds, width, animEngine);
+            chooseNextState(screenBounds, width, currentPos.x(), moveSpeed, animEngine);
             if (resetInactivityCallback) resetInactivityCallback();
         }
         return;
@@ -64,6 +78,7 @@ void BehaviorController::processBehaviorTick(
 
         if (reached || m_stateTicks <= 0) {
             m_state = CompanionState::Idle;
+            m_stateTicks = QRandomGenerator::global()->bounded(20, 100);
             if (animEngine) animEngine->setState(AnimationEngine::AnimationState::Idle);
         }
         else {
@@ -74,7 +89,7 @@ void BehaviorController::processBehaviorTick(
     else {
         m_stateTicks--;
         if (m_stateTicks <= 0) {
-            chooseNextState(screenBounds, width, animEngine);
+            chooseNextState(screenBounds, width, currentPos.x(), moveSpeed, animEngine);
         }
     }
 }

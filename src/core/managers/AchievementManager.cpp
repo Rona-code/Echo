@@ -8,6 +8,7 @@
 AchievementManager::AchievementManager()
 {
     initAchievements();
+    initConnections();
     unlock("first_launch");
 
     if (!isUnlocked("night_owl")) {
@@ -98,8 +99,14 @@ void AchievementManager::initAchievements() {
 
 //--- Logique d'unlock ---
 void AchievementManager::registerAchievement(const QString& id, const QString& title, const QString& desc) {
-    bool savedState = m_settings.value("achievements/" + id, false).toBool();
-    m_achievements[id] = { id, title, desc, savedState };
+    if (m_achievements.contains(id)) {
+        m_achievements[id].title = title;
+        m_achievements[id].description = desc;
+    }
+    else {
+        bool savedState = m_settings.value("achievements/" + id, false).toBool();
+        m_achievements[id] = { id, title, desc, savedState };
+    }
 }
 
 void AchievementManager::unlock(const QString& id) {
@@ -155,6 +162,7 @@ void AchievementManager::resetAll() {
 void AchievementManager::initConnections() {
     connect(&TranslationManager::instance(), &TranslationManager::languageChanged, this, [this]() {
         unlock("polyglot");
+        initAchievements();
         });
 }
 

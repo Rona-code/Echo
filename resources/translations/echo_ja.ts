@@ -4,172 +4,172 @@
   <context>
     <name>AchievementManager</name>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="31" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="32" />
       <source>Premier pas</source>
       <translation>最初のステップ</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="32" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="33" />
       <source>Là où tout commence... Éveillez votre compagnon.</source>
       <translation>どこから始めれば...仲間を目覚めさせます.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="35" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="36" />
       <source>Polyglotte</source>
       <translation>ポリグロット</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="36" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="37" />
       <source>Parlez une langue que les murs ne comprennent pas.</source>
       <translation>壁がわからない言語を話します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="39" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="40" />
       <source>Démon de la vitesse</source>
       <translation>スピードデモンド</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="40" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="41" />
       <source>Frôlez la vitesse de la lumière (ou du moins, tombez très vite)</source>
       <translation>光の速度(または少なくとも、非常に速く落ちて下さい)を乾燥して下さい</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="43" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="44" />
       <source>Oiseau de nuit</source>
       <translation>夜の鳥</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="44" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="45" />
       <source>Actif quand le monde entier est plongé dans le noir.</source>
       <translation>暗闇の中で世界全体が没入したときにアクティブ.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="47" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="48" />
       <source>Grand Voyageur</source>
       <translation>偉大な旅行者</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="48" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="49" />
       <source>Arpentez l'écran de long en large, encore et encore.</source>
       <translation>画面を長くからワイド、オーバー、オーバーまでスワイプします.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="51" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="52" />
       <source>Fidèle</source>
       <translation>ファシリティ</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="52" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="53" />
       <source>Le temps s'efface quand on est bien accompagné.</source>
       <translation>あなたがよく同行しているときの時間フェード.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="55" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="56" />
       <source>Nouvelle recrue</source>
       <translation>新規採用</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="56" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="57" />
       <source>Accueillez une âme supplémentaire sous votre toit.</source>
       <translation>あなたの屋根の下に余分な魂を歓迎します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="59" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="60" />
       <source>Métamorphe</source>
       <translation>メタモルフ</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="60" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="61" />
       <source>Changez de visage comme de chemise.</source>
       <translation>シャツのように顔を変える.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="63" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="64" />
       <source>Chatouilleux</source>
       <translation>ティクル</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="64" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="65" />
       <source>À force de le pousser à bout, il finira par réagir.</source>
       <translation>最後まで押して、最終的に反応します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="67" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="68" />
       <source>Minuscule</source>
       <translation>ミヌスカル</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="68" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="69" />
       <source>Réduisez votre compagnon à sa plus simple expression.</source>
       <translation>簡単な表現に仲間を減らす.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="71" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="72" />
       <source>Titan</source>
       <translation>ログイン</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="72" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="73" />
       <source>Donnez à votre compagnon des proportions gigantesques.</source>
       <translation>あなたの仲間に大きな比率を与えます.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="75" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="76" />
       <source>Hyperactif</source>
       <translation>ハイパーアクティブ</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="76" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="77" />
       <source>Poussez la vitesse d'animation au maximum de sa folie.</source>
       <translation>アニメーションの速度をマディネスの最大に押します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="79" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="80" />
       <source>Au ralenti</source>
       <translation>スローダウン</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="80" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="81" />
       <source>Profitez de chaque image dans une lenteur absolue.</source>
       <translation>各イメージを絶対的なスローネスでお楽しみください.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="83" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="84" />
       <source>Marmotte</source>
       <translation>マーモット</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="84" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="85" />
       <source>Réglez le délai d'inactivité au plus court.</source>
       <translation>最小限に非アクティブの時刻を設定します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="87" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="88" />
       <source>Insomniaque</source>
       <translation>インソムニア</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="88" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="89" />
       <source>Laissez-lui tout le temps du monde avant de piquer un somme.</source>
       <translation>ナップを浴びる前に、世界中の時間をすべて残します.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="91" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="92" />
       <source>Organisé</source>
       <translation>組織図</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="92" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="93" />
       <source>Planifiez votre avenir en ajoutant un événement au calendrier.</source>
       <translation>カレンダーにイベントを追加することで、未来を計画しましょう.</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="95" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="96" />
       <source>???</source>
       <translation>???????</translation>
     </message>
     <message>
-      <location filename="../../src/core/managers/AchievementManager.cpp" line="96" />
+      <location filename="../../src/core/managers/AchievementManager.cpp" line="97" />
       <source>Vous avez percé le secret des développeurs !</source>
       <translation>開発者の秘密を突き止めました!</translation>
     </message>
@@ -438,7 +438,7 @@
   <context>
     <name>Companion</name>
     <message>
-      <location filename="../../src/ui/windows/Companion.cpp" line="74" />
+      <location filename="../../src/ui/windows/Companion.cpp" line="88" />
       <source>Hé ! Petit rappel pour aujourd'hui :
 
 "%1"
@@ -451,7 +451,7 @@ Ne l'oublie pas !</source>
 お問い合わせ!</translation>
     </message>
     <message>
-      <location filename="../../src/ui/windows/Companion.cpp" line="75" />
+      <location filename="../../src/ui/windows/Companion.cpp" line="89" />
       <source>Alerte de ton Compagnon</source>
       <translation>コンパニオンアラート</translation>
     </message>

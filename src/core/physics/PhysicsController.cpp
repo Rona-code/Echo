@@ -10,7 +10,7 @@ QPoint PhysicsController::calculateNextWalkPosition(const QPoint& currentPos, fl
 
     if (std::abs(deltaX) <= moveSpeed) {
         outReached = true;
-        return currentPos;
+        return QPoint(static_cast<int>(targetX), currentPos.y());
     }
 
     outReached = false;
