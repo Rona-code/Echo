@@ -35,7 +35,7 @@ Companion::Companion(QWidget* parent) : QWidget(parent) {
         }
 
         m_behavior.setState(CompanionState::Sleeping);
-        m_behavior.setTicks(QRandomGenerator::global()->bounded(200, 600));
+        m_behavior.setTicks(QRandomGenerator::global()->bounded(200, 6001));
         if (m_animationEngine) m_animationEngine->setState(AnimationEngine::AnimationState::Sleeping);
         });
 
